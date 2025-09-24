@@ -14,6 +14,7 @@ class Bouquet(models.Model):
         ('до 1000', 'до 1000'),
         ('1000-5000', '1000-5000'),
         ('от 5000', 'от 5000'),
+        ('не имеет значения', 'Не имеет значения'), 
     ]
     name = models.CharField(verbose_name='Название букета', max_length=50, unique=True)
     image = models.ImageField(verbose_name='Изображение букета', upload_to='bouquets/', blank=True)
@@ -75,6 +76,7 @@ class Order(models.Model):
 class Consultation(models.Model):
     customer = models.ForeignKey(Customer, verbose_name='Покупатель', on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    details = models.TextField(verbose_name='Подробности от флориста', blank=True) 
 
     def __str__(self):
         return f'Заявка от {self.customer or "Неизвестно"}'
