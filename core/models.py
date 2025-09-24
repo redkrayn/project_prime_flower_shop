@@ -2,6 +2,7 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.core.validators import MinValueValidator
 
+
 class Bouquet(models.Model):
     OCCASIONS = [
         ('Свадьба', 'Свадьба'),
@@ -29,6 +30,7 @@ class Bouquet(models.Model):
         verbose_name = 'Букет'
         verbose_name_plural = 'Букеты'
 
+
 class Customer(models.Model):
     first_name = models.CharField('Имя', max_length=50)
     last_name = models.CharField('Фамилия', max_length=50, blank=True)
@@ -41,6 +43,7 @@ class Customer(models.Model):
         verbose_name = 'Покупатель'
         verbose_name_plural = 'Покупатели'
 
+
 class Courier(models.Model):
     name = models.CharField('Имя курьера', max_length=100)
     phone_number = PhoneNumberField('Номер телефона', blank=True)
@@ -51,6 +54,7 @@ class Courier(models.Model):
     class Meta:
         verbose_name = 'Курьер'
         verbose_name_plural = 'Курьеры'
+
 
 class Order(models.Model):
     customer = models.ForeignKey(Customer, verbose_name='Покупатель', on_delete=models.CASCADE)
@@ -66,6 +70,7 @@ class Order(models.Model):
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+
 
 class Consultation(models.Model):
     customer = models.ForeignKey(Customer, verbose_name='Покупатель', on_delete=models.SET_NULL, null=True, blank=True)
