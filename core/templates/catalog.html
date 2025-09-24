@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог | Flower Shop</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="/"><img src="{% static 'img/logo.svg' %}" alt="logo" class="logo"></a>
+        </div>
+    </header>
+
+    <section id="catalog">
+        <div class="container">
+            <h1>Каталог букетов</h1>
+            <div class="catalog__list ficb">
+                {% for bouquet in bouquets %}
+                    <div class="catalog__item">
+                        <img src="{{ bouquet.image.url }}" alt="{{ bouquet.name }}">
+                        <div class="catalog__item_name">{{ bouquet.name }}</div>
+                        <div class="catalog__item_price">{{ bouquet.price }} руб</div>
+                        <a href="/order/" class="btn catalog__item_btn">Заказать</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</body>
+</html>
