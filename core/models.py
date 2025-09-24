@@ -1,3 +1,79 @@
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
+from django.core.validators import MinValueValidator
 
-# Create your models here.
+class Bouquet(models.Model):
+    OCCASIONS = [
+        ('Свадьба', 'Свадьба'),
+        ('День рождения', 'День рождения'),
+        ('Без повода', 'Без повода'),
+        ('Другой повод', 'Другой повод'),
+    ]
+    BUDGETS = [
+        ('до 1000', 'до 1000'),
+        ('1000-5000', '1000-5000'),
+        ('от 5000', 'от 5000'),
+    ]
+    name = models.CharField(verbose_name='Название букета', max_length=50, unique=True)
+    image = models.ImageField(verbose_name='Изображение букета', upload_to='bouquets/', blank=True)
+    price = models.PositiveIntegerField(verbose_name='Цена', default=0, validators=[MinValueValidator(1)])
+    description = models.TextField(verbose_name='Описание', blank=True)
+    composition = models.TextField(verbose_name='Состав', blank=True)
+    occasion = models.CharField(verbose_name='Повод', max_length=50, choices=OCCASIONS, default='Без повода')
+    budget = models.CharField(verbose_name='Бюджет', max_length=50, choices=BUDGETS, default='1000-5000')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Букет'
+        verbose_name_plural = 'Букеты'
+
+class Customer(models.Model):
+    first_name = models.CharField('Имя', max_length=50)
+    last_name = models.CharField('Фамилия', max_length=50, blank=True)
+    phone_number = PhoneNumberField('Номер телефона')
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name or ""}'.strip()
+
+    class Meta:
+        verbose_name = 'Покупатель'
+        verbose_name_plural = 'Покупатели'
+
+class Courier(models.Model):
+    name = models.CharField('Имя курьера', max_length=100)
+    phone_number = PhoneNumberField('Номер телефона', blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Курьер'
+        verbose_name_plural = 'Курьеры'
+
+class Order(models.Model):
+    customer = models.ForeignKey(Customer, verbose_name='Покупатель', on_delete=models.CASCADE)
+    bouquet = models.ForeignKey(Bouquet, verbose_name='Букет', related_name='orders', on_delete=models.CASCADE)
+    courier = models.ForeignKey(Courier, verbose_name='Курьер', on_delete=models.SET_NULL, null=True, blank=True)
+    delivery_address = models.CharField(verbose_name='Адрес доставки', max_length=256)
+    delivery_time = models.CharField(verbose_name='Время доставки', max_length=30)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.bouquet} для {self.customer}'
+
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'
+
+class Consultation(models.Model):
+    customer = models.ForeignKey(Customer, verbose_name='Покупатель', on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Заявка от {self.customer or "Неизвестно"}'
+
+    class Meta:
+        verbose_name = 'Заявка на консультацию'
+        verbose_name_plural = 'Заявки на консультацию'
