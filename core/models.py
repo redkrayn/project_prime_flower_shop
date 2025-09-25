@@ -65,7 +65,7 @@ class Florist(models.Model):
 
 class Order(models.Model):
     customer = models.ForeignKey(Customer, verbose_name='Покупатель', on_delete=models.CASCADE)
-    bouquet = models.ForeignKey(Bouquet, verbose_name='Букет', related_name='orders', on_delete=models.CASCADE)
+    bouquet = models.ForeignKey(Bouquet, verbose_name='Букет', related_name='orders', on_delete=models.CASCADE, null=True, blank=True)
     courier = models.ForeignKey(Courier, verbose_name='Курьер', on_delete=models.SET_NULL, null=True, blank=True)
     delivery_address = models.CharField(verbose_name='Адрес доставки', max_length=256)
     delivery_time = models.CharField(verbose_name='Время доставки', max_length=30)
@@ -84,6 +84,7 @@ class Consultation(models.Model):
     details = models.TextField(verbose_name='Подробности от флориста', blank=True)
     def __str__(self):
         return f'Заявка от {self.customer or "Неизвестно"}'
+
     class Meta:
         verbose_name = 'Заявка на консультацию'
         verbose_name_plural = 'Заявки на консультацию'
