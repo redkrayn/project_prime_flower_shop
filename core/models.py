@@ -121,8 +121,14 @@ class Order(models.Model):
         blank=True
     )
 
-    delivery_address = models.CharField(verbose_name='Адрес доставки', max_length=256)
-    delivery_time = models.CharField(verbose_name='Время доставки', max_length=30)
+    delivery_address = models.CharField(
+        verbose_name='Адрес доставки',
+        max_length=256
+    )
+    delivery_time = models.CharField(
+        verbose_name='Время доставки',
+        max_length=30
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -134,10 +140,25 @@ class Order(models.Model):
 
 
 class Consultation(models.Model):
-    customer = models.ForeignKey(Customer, verbose_name='Покупатель', on_delete=models.SET_NULL, null=True, blank=True)
-    florist = models.ForeignKey(Florist, verbose_name='Флорист', on_delete=models.SET_NULL, null=True, blank=True)
+    customer = models.ForeignKey(
+        Customer,
+        verbose_name='Покупатель',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    florist = models.ForeignKey(
+        Florist,
+        verbose_name='Флорист',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
-    details = models.TextField(verbose_name='Подробности от флориста', blank=True)
+    details = models.TextField(
+        verbose_name='Подробности от флориста',
+        blank=True
+    )
 
     def __str__(self):
         return f'Заявка от {self.customer or "Неизвестно"}'
