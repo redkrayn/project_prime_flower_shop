@@ -72,13 +72,26 @@ def consultation(request):
 
 
 def quiz(request):
-    return render(request, 'quiz.html')
+    return render(request, "quiz.html", {
+        "occasions": Bouquet.OCCASIONS
+    })
 
 
 def quiz_step(request):
-    return render(request, 'quiz-step.html')
+    occasion = request.GET.get("occasion")
+    return render(request, "quiz-step.html", {
+        "occasion": occasion,
+        "budgets": Bouquet.BUDGETS
+    })
 
 
-def result(request, pk):
-    bouquet = get_object_or_404(Bouquet, pk=pk)  
-    return render(request, 'result.html', {'bouquet': bouquet})
+def result(request):
+    # заглушка TODO: запрашивать букет из БД на основе GET параметров
+    bouquet = {
+        "name": "Летнее утро",
+        "price": 3600,
+        "description": "Этот букет передает атмосферу летнего утра в деревне. Букет создан из свежих полевых цветов, собранных вручную.",
+        "composition": "Альстромерия белая, Эустома белая, Ромашка, Роза пионовидная",
+        "image": "img/cardImg.jpg"
+    }
+    return render(request, "result.html", {"bouquet": bouquet})

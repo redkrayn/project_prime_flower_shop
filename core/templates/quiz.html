@@ -34,9 +34,9 @@
                 <div class="quiz__block">
                     <h1 class="quiz__title">К какому событию нужен букет?</h1>
                     <div class="quiz__elems fic">
-                        <a href="{% url 'quiz_step' %}?occasion=Свадьба" class="quiz__elem">Свадьба</a>
-                        <a href="{% url 'quiz_step' %}?occasion=День рождения" class="quiz__elem">День рождения</a>
-                        <a href="{% url 'quiz_step' %}?occasion=Без повода" class="quiz__elem">Без повода</a>
+                        {% for value, label in occasions %}
+                            <a href="{% url 'quiz_step' %}?occasion={{ value }}" class="quiz__elem">{{ label }}</a>
+                        {% endfor %}
                     </div>
                     <div class="quiz__progress">
                         <div class="quiz__progress_step">
