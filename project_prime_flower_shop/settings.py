@@ -1,6 +1,8 @@
 from pathlib import Path
+from environs import env
 
 
+env.read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -73,3 +75,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+TELEGRAM_BOT_TOKEN = env.str('TELEGRAM_BOT_TOKEN')
+TELEGRAM_CHAT_ID = env.str('TELEGRAM_CHAT_ID')
