@@ -23,24 +23,24 @@ def order(request):
         delivery_address = request.POST.get('delivery_address')
         delivery_time = request.POST.get('delivery_time')
 
-    customer, created = Customer.objects.get_or_create(
-        first_name=first_name,
-        phone_number=phone_number,
-        defaults={'last_name': ''}
-    )
-    # available_couriers = Courier.objects.all()
-    # if available_couriers:
-    #     courier = random.choice(available_couriers)
-    # ДОПИЛИТЬ ЛОГИКУ ВЫБОРА КУРЬЕРА
-    order = Order(
-        customer=customer,
-        bouquet_id=bouquet_id,# ПОКА null=True, blank=True В МОДЕЛИ ORDER
-        delivery_address=delivery_address,
-        delivery_time=delivery_time,
-        courier=None
-    )
-    order.save()
-    request.session['order_id'] = order.id
+        customer, created = Customer.objects.get_or_create(
+            first_name=first_name,
+            phone_number=phone_number,
+            defaults={'last_name': ''}
+        )
+        # available_couriers = Courier.objects.all()
+        # if available_couriers:
+        #     courier = random.choice(available_couriers)
+        # ДОПИЛИТЬ ЛОГИКУ ВЫБОРА КУРЬЕРА
+        order = Order(
+            customer=customer,
+            bouquet_id=bouquet_id,# ПОКА null=True, blank=True В МОДЕЛИ ORDER
+            delivery_address=delivery_address,
+            delivery_time=delivery_time,
+            courier=None
+        )
+        order.save()
+        request.session['order_id'] = order.id
     
     return render(request, 'order.html', {
         'bouquets': bouquets,
