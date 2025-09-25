@@ -16,8 +16,10 @@ def catalog(request):
 >>>>>>> 5a083c8b54f502f31e3f2266ac7eae15bc590958
 
 
+
 def order(request):
     return render(request, 'order.html')
+
 
 
 def order_step(request):
@@ -28,12 +30,15 @@ def catalog(request):
     return render(request, 'catalog.html', {'bouquets': bouquets})
 
 
+
 def consultation(request):
     return render(request, 'consultation.html')
 
 
+
 def quiz(request):
     return render(request, 'quiz.html')
+
 
 
 def quiz_step(request):
@@ -44,6 +49,7 @@ def result(request, pk):
     bouquet = get_object_or_404(Bouquet, pk=pk)  
     return render(request, 'result.html', {'bouquet': bouquet})
 =======
+
 
 def result(request):
     return render(request, "result.html")
