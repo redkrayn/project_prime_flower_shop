@@ -34,16 +34,17 @@
                              <form action="{% url 'order' %}" method="post" class="order__form">
                                  {% csrf_token %}
                                  <div class="order__form_block ficb">
-                                     <input type="text" name="first_name" class="order__form_input" placeholder="Введите Имя" value="{{ form_data.first_name|default_if_none:'' }}" required>
                                      <input type="text" name="phone_number" class="order__form_input" placeholder="+7 (999) 000 00 00" value="{{ form_data.phone_number|default_if_none:'' }}" required>
+                                     <input type="text" name="first_name" class="order__form_input" placeholder="Введите Имя" value="{{ form_data.first_name|default_if_none:'' }}" required>
                                      <input type="text" name="delivery_address" class="order__form_input" placeholder="Введите адрес доставки" value="{{ form_data.delivery_address|default_if_none:'' }}" required>
                                  </div>
                                  <div class="order__form_btns fic">
-                                     {% for time in delivery_times %}
-                                         <div class="order__form_radioBlock">
-                                             <label for="delivery_time_{{ forloop.counter }}" class="radioLable">{{ time }}</label>
-                                         </div>
-                                     {% endfor %}
+                                    {% for time in delivery_times %}
+                                        <div class="order__form_radioBlock">
+                                            <input type="radio" id="delivery_time_{{ forloop.counter }}" name="delivery_time" value="{{ time }}" class="order__form_radio" required>
+                                            <label for="delivery_time_{{ forloop.counter }}" class="radioLable">{{ time }}</label>
+                                        </div>
+                                    {% endfor %}
                                  </div>
                                  {% if errors %}
                                      <div class="errors">

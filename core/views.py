@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from .models import Bouquet, Customer, Order, Courier, Consultation
-from .send_msg_tg import send_msg_to_florist
+from .send_msg_tg import send_msg_to_florist, send_msg_to_courier
 
 
 def index(request):
@@ -21,22 +21,34 @@ def order(request):
         phone_number = request.POST.get('phone_number')
         delivery_address = request.POST.get('delivery_address')
         delivery_time = request.POST.get('delivery_time')
-
+        
         customer, created = Customer.objects.get_or_create(
             first_name=first_name,
             phone_number=phone_number,
             defaults={'last_name': ''}
         )
+        
+        courier = Courier.objects.filter(is_active=True).order_by('number_orders').first()
+
         order = Order(
             customer=customer,
             bouquet_id=bouquet_id,
             delivery_address=delivery_address,
             delivery_time=delivery_time,
-            courier=None
+            is_counted=True,
+            courier=courier
         )
         order.save()
+
+        courier.number_orders += 1
+        courier.save()
+        send_msg_to_courier(courier.name, 
+                            customer.first_name, 
+                            customer.phone_number, 
+                            order.delivery_time)
+        
         request.session['order_id'] = order.id
-    
+
     return render(request, 'order.html', {
         'bouquets': bouquets,
         'delivery_times': delivery_times
@@ -64,6 +76,18 @@ def consultation(request):
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         phone_number = request.POST.get('phone_number')
+
+    customer, created = Customer.objects.get_or_create(
+            first_name=first_name,
+            phone_number=phone_number,
+            defaults={'last_name': ''}
+        )
+
+    consultation = Consultation.objects.create(
+        customer=customer,
+    )
+    consultation.save()
+    send_msg_to_florist(customer.first_name, customer.phone_number, consultation.created_at)
         consultation = Consultation.objects.create(
             first_name=first_name,
             phone_number=phone_number
