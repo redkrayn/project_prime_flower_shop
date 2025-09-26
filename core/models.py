@@ -2,6 +2,7 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.core.validators import MinValueValidator
 
+
 class Bouquet(models.Model):
     OCCASIONS = [
         ('wedding', 'Свадьба'),
@@ -28,6 +29,7 @@ class Bouquet(models.Model):
         verbose_name = 'Букет'
         verbose_name_plural = 'Букеты'
 
+
 class Customer(models.Model):
     first_name = models.CharField(verbose_name='Имя', max_length=50)
     last_name = models.CharField(verbose_name='Фамилия', max_length=50, blank=True)
@@ -37,6 +39,7 @@ class Customer(models.Model):
     class Meta:
         verbose_name = 'Покупатель'
         verbose_name_plural = 'Покупатели'
+
 
 class Florist(models.Model):
     name = models.CharField(verbose_name='Имя флориста', max_length=100)
@@ -48,6 +51,7 @@ class Florist(models.Model):
         verbose_name = 'Флорист'
         verbose_name_plural = 'Флористы'
 
+
 class Courier(models.Model):
     name = models.CharField(verbose_name='Имя курьера', max_length=100)
     phone_number = PhoneNumberField(verbose_name='Номер телефона', blank=True)
@@ -57,6 +61,7 @@ class Courier(models.Model):
     class Meta:
         verbose_name = 'Курьер'
         verbose_name_plural = 'Курьеры'
+
 
 class Order(models.Model):
     customer = models.ForeignKey(Customer, verbose_name='Покупатель', on_delete=models.CASCADE)
@@ -71,6 +76,7 @@ class Order(models.Model):
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
 
+
 class Consultation(models.Model):
     customer = models.ForeignKey(Customer, verbose_name='Покупатель', on_delete=models.SET_NULL, null=True, blank=True)
     florist = models.ForeignKey(Florist, verbose_name='Флорист', on_delete=models.SET_NULL, null=True, blank=True, help_text='Флорист, которому назначена заявка')
@@ -80,6 +86,7 @@ class Consultation(models.Model):
     class Meta:
         verbose_name = 'Заявка на консультацию'
         verbose_name_plural = 'Заявки на консультацию'
+
 
 class Payment(models.Model):
     order = models.OneToOneField(Order, verbose_name='Заказ', on_delete=models.CASCADE)

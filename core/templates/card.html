@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,7 @@
                 <nav>
                     <ul class="menu ficc">
                         <li class="menu__item"><a href="{% url 'catalog' %}" class="menu__item_link">Каталог</a></li>
-                        <li class="menu__item"><a href="#" class="menu__item_link">Рекомендации</a></li>
+                        <li class="menu__item"><a href="{% url 'quiz' %}" class="menu__item_link">Рекомендации</a></li>
                         <li class="menu__item"><a href="{% url 'consultation' %}" class="menu__item_link">Контакты</a></li>
                     </ul>
                 </nav>
@@ -31,13 +31,13 @@
                 <div class="title">{{ bouquet.name }}</div>
                 <div class="result__block ficb">
                     <div class="result__elems">
-                        <div class="card__elems ">
+                        <div class="card__elems">
                             <span class="card__elems_intro">Описание:</span>
                             <div class="card__items">
                                 <p class="card__items_text card__items_text__first">{{ bouquet.description }}</p>
                             </div>
                         </div>
-                        <div class="card__elems ">
+                        <div class="card__elems">
                             <span class="card__elems_intro">Состав:</span>
                             <div class="card__items">
                                 <p class="card__items_text card__items_text__first">{{ bouquet.composition }}</p>
@@ -51,7 +51,7 @@
                     {% endif %}
                     <div class="result__items">
                         <div class="result__items_price">{{ bouquet.price }} руб</div>
-                        <a href="{% url 'order' %}" class="btn result__items_btn">Заказать букет</a>
+                        <a href="{% url 'order' %}?bouquet={{ bouquet.id }}" class="btn result__items_btn">Заказать букет</a>
                         <hr class="result__items_line" />
                         <div class="result__items_intro">Хотите что-то более специальное?</div>
                         <div class="result__items_block">
@@ -87,7 +87,7 @@
                         <script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3Af39d7a7f1829359b6ffe21ab6356fcaeace17d528d6522dba8772f885c8b1a7d&amp;width=398&amp;height=316&amp;lang=ru_RU&amp;scroll=true"></script>
                     </div>
                 </div>
-                <button class="btn contacts__btn">Заказать доставку</button>
+                <a href="{% url 'order' %}" class="btn contacts__btn">Заказать доставку</a>
             </div>
         </div>
     </section>
@@ -97,9 +97,9 @@
                 <div class="title consultation__title">Оставьте заявку на консультацию</div>
                 <form action="{% url 'consultation' %}" method="post" class="consultation__form">
                     {% csrf_token %}
-                    <input type="text" name="fname" class="consultation__form_input" placeholder="Введите Имя" required>
-                    <input type="text" name="tel" class="consultation__form_input" placeholder="+ 7 (999) 000 00 00" required>
-                    <button type="submit" class="consultation__form_btn">Отправить</button>
+                    <input type="text" name="first_name" class="consultation__form_input" placeholder="Введите Имя" required>
+                    <input type="text" name="phone_number" class="consultation__form_input" placeholder="+7 (999) 000 00 00" required>
+                    <button type="submit" class="btn consultation__form_btn">Отправить</button>
                 </form>
             </div>
         </div>
@@ -111,7 +111,7 @@
                 <nav>
                     <ul class="menu footer__menu ficc">
                         <li class="menu__item"><a href="{% url 'catalog' %}" class="menu__item_link">Каталог</a></li>
-                        <li class="menu__item"><a href="#" class="menu__item_link">Рекомендации</a></li>
+                        <li class="menu__item"><a href="{% url 'quiz' %}" class="menu__item_link">Рекомендации</a></li>
                         <li class="menu__item"><a href="{% url 'consultation' %}" class="menu__item_link">Контакты</a></li>
                     </ul>
                 </nav>

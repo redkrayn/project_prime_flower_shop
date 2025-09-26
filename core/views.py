@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-
+from django.core.paginator import Paginator
 from .models import Bouquet, Customer, Order, Courier, Consultation
 from .send_msg_tg import send_msg_to_florist
-
 
 
 def index(request):
@@ -28,13 +27,9 @@ def order(request):
             phone_number=phone_number,
             defaults={'last_name': ''}
         )
-        # available_couriers = Courier.objects.all()
-        # if available_couriers:
-        #     courier = random.choice(available_couriers)
-        # ДОПИЛИТЬ ЛОГИКУ ВЫБОРА КУРЬЕРА
         order = Order(
             customer=customer,
-            bouquet_id=bouquet_id,# ПОКА null=True, blank=True В МОДЕЛИ ORDER
+            bouquet_id=bouquet_id,
             delivery_address=delivery_address,
             delivery_time=delivery_time,
             courier=None
@@ -53,21 +48,28 @@ def order_step(request):
 
 
 def catalog(request):
-    bouquets = Bouquet.objects.all()  
-    return render(request, 'catalog.html', {'bouquets': bouquets})
+    bouquets = Bouquet.objects.all().order_by('id')  
+    paginator = Paginator(bouquets, 6)  
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'catalog.html', {'page_obj': page_obj})
+
+
+def bouquet_detail(request, bouquet_id):
+    bouquet = get_object_or_404(Bouquet, id=bouquet_id)
+    return render(request, 'card.html', {'bouquet': bouquet})
 
 
 def consultation(request):
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         phone_number = request.POST.get('phone_number')
-
-    consultation = Consultation.objects.create(
-        first_name=first_name,
-        phone_number=phone_number
-    )
-    consultation.save()
-    send_msg_to_florist(first_name, phone_number, consultation.created_at)
+        consultation = Consultation.objects.create(
+            first_name=first_name,
+            phone_number=phone_number
+        )
+        consultation.save()
+        send_msg_to_florist(first_name, phone_number, consultation.created_at)
     return render(request, 'index.html')
 
 
@@ -86,7 +88,6 @@ def quiz_step(request):
 
 
 def result(request):
-    # заглушка TODO: запрашивать букет из БД на основе GET параметров
     bouquet = {
         "name": "Летнее утро",
         "price": 3600,
