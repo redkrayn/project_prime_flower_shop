@@ -44,7 +44,7 @@
                             </div>
                         </div>
                     </div>
-                    <img src="{% static bouquet.image %}" alt="result Img" class="result__block_img">
+                    <img src="{{ bouquet.image.url }}" alt="result Img" class="result__block_img">
                     <div class="result__items">
                         <div class="title result__items_title">{{ bouquet.name }}</div>
                         <div class="result__items_price">{{ bouquet.price }} руб</div>

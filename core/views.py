@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-
+from django.core.paginator import Paginator
 from .models import Bouquet, Customer, Order, Courier, Consultation
 from .send_msg_tg import send_msg_to_florist, send_msg_to_courier
-
 
 
 def index(request):
@@ -61,8 +60,16 @@ def order_step(request):
 
 
 def catalog(request):
-    bouquets = Bouquet.objects.all()  
-    return render(request, 'catalog.html', {'bouquets': bouquets})
+    bouquets = Bouquet.objects.all().order_by('id')  
+    paginator = Paginator(bouquets, 6)  
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'catalog.html', {'page_obj': page_obj})
+
+
+def bouquet_detail(request, bouquet_id):
+    bouquet = get_object_or_404(Bouquet, id=bouquet_id)
+    return render(request, 'card.html', {'bouquet': bouquet})
 
 
 def consultation(request):
@@ -81,6 +88,12 @@ def consultation(request):
     )
     consultation.save()
     send_msg_to_florist(customer.first_name, customer.phone_number, consultation.created_at)
+        consultation = Consultation.objects.create(
+            first_name=first_name,
+            phone_number=phone_number
+        )
+        consultation.save()
+        send_msg_to_florist(first_name, phone_number, consultation.created_at)
     return render(request, 'index.html')
 
 
@@ -99,12 +112,21 @@ def quiz_step(request):
 
 
 def result(request):
-    # заглушка TODO: запрашивать букет из БД на основе GET параметров
+    occasion = request.GET.get("occasion")
+    budget = request.GET.get("budget")
+
+    found_bouquet = Bouquet.objects.filter(
+        occasion=occasion,
+        budget=budget
+    ).order_by('?').first()
+    if not found_bouquet:
+        found_bouquet = Bouquet.objects.first()
+
     bouquet = {
-        "name": "Летнее утро",
-        "price": 3600,
-        "description": "Этот букет передает атмосферу летнего утра в деревне. Букет создан из свежих полевых цветов, собранных вручную.",
-        "composition": "Альстромерия белая, Эустома белая, Ромашка, Роза пионовидная",
-        "image": "img/cardImg.jpg"
+        "name": found_bouquet.name,
+        "price": found_bouquet.price,
+        "description": found_bouquet.description,
+        "composition": found_bouquet.composition,
+        "image": found_bouquet.image
     }
     return render(request, "result.html", {"bouquet": bouquet})

@@ -5,9 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flower Shop</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Unbounded:wght@700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Unbounded:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
 </head>
 <body>
@@ -18,7 +16,7 @@
                 <nav>
                     <ul class="menu ficc">
                         <li class="menu__item"><a href="{% url 'catalog' %}" class="menu__item_link">Каталог</a></li>
-                        <li class="menu__item"><a href="#" class="menu__item_link">Рекомендации</a></li>
+                        <li class="menu__item"><a href="{% url 'quiz' %}" class="menu__item_link">Рекомендации</a></li>
                         <li class="menu__item"><a href="{% url 'consultation' %}" class="menu__item_link">Контакты</a></li>
                     </ul>
                 </nav>
@@ -31,46 +29,34 @@
                 <div class="title">Все букеты</div>
                 <div class="catalog__block">
                     <div class="recommended__elems ficb recommended__elems_first">
-                        <div class="recommended__block recommended__block_first">
-                            <div class="recommended__block_elems ficb">
-                                <span class="recommended__block_intro">Летнее утро</span>
-                                <span class="recommended__block_price">3 600 руб</span>
+                        {% for bouquet in page_obj|slice:":3" %}
+                            <div class="recommended__block">
+                                <a href="{% url 'bouquet_detail' bouquet.id %}">
+                                    <img src="{{ bouquet.image.url|default:'/static/img/cardImg.jpg' }}" alt="{{ bouquet.name }}" class="recommended__block_img">
+                                    <div class="recommended__block_elems ficb">
+                                        <span class="recommended__block_intro">{{ bouquet.name }}</span>
+                                        <span class="recommended__block_price">{{ bouquet.price }} руб</span>
+                                    </div>
+                                </a>
                             </div>
-                        </div>
-                        <div class="recommended__block recommended__block_sec">
-                            <div class="recommended__block_elems ficb">
-                                <span class="recommended__block_intro">Пламенный закат</span>
-                                <span class="recommended__block_price">3 600 руб</span>
-                            </div>
-                        </div>
-                        <div class="recommended__block recommended__block_thr">
-                            <div class="recommended__block_elems ficb">
-                                <span class="recommended__block_intro">Осенний</span>
-                                <span class="recommended__block_price">3 600 руб</span>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
                     <div class="recommended__elems ficb recommended__elems_sec">
-                        <div class="recommended__block recommended__block_first">
-                            <div class="recommended__block_elems ficb">
-                                <span class="recommended__block_intro">Полевой</span>
-                                <span class="recommended__block_price">1 600 руб</span>
+                        {% for bouquet in page_obj|slice:"3:" %}
+                            <div class="recommended__block">
+                                <a href="{% url 'bouquet_detail' bouquet.id %}">
+                                    <img src="{{ bouquet.image.url|default:'/static/img/cardImg.jpg' }}" alt="{{ bouquet.name }}" class="recommended__block_img">
+                                    <div class="recommended__block_elems ficb">
+                                        <span class="recommended__block_intro">{{ bouquet.name }}</span>
+                                        <span class="recommended__block_price">{{ bouquet.price }} руб</span>
+                                    </div>
+                                </a>
                             </div>
-                        </div>
-                        <div class="recommended__block recommended__block_sec">
-                            <div class="recommended__block_elems ficb">
-                                <span class="recommended__block_intro">Весенний</span>
-                                <span class="recommended__block_price">3 200 руб</span>
-                            </div>
-                        </div>
-                        <div class="recommended__block recommended__block_thr">
-                            <div class="recommended__block_elems ficb">
-                                <span class="recommended__block_intro">Нежный</span>
-                                <span class="recommended__block_price">2 900 руб</span>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
-                    <button class="btn largeBtn catalog__btn">Показать ещё</button>
+                    {% if page_obj.has_next %}
+                        <button class="btn largeBtn catalog__btn">Показать ещё</button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -79,9 +65,10 @@
         <div class="container">
             <div class="consultation">
                 <div class="title consultation__title">Оставьте заявку на консультацию</div>
-                <form action="#" class="consultation__form">
-                    <input type="text" name="fname" class="consultation__form_input" placeholder="Введите Имя" required>
-                    <input type="text" name="tel" class="consultation__form_input" placeholder="+ 7 (999) 000 00 00" required>
+                <form action="{% url 'consultation' %}" method="post" class="consultation__form">
+                    {% csrf_token %}
+                    <input type="text" name="first_name" class="consultation__form_input" placeholder="Введите Имя" required>
+                    <input type="text" name="phone_number" class="consultation__form_input" placeholder="+7 (999) 000 00 00" required>
                     <button type="submit" class="consultation__form_btn">Отправить</button>
                 </form>
             </div>
@@ -94,7 +81,7 @@
                 <nav>
                     <ul class="menu footer__menu ficc">
                         <li class="menu__item"><a href="{% url 'catalog' %}" class="menu__item_link">Каталог</a></li>
-                        <li class="menu__item"><a href="#" class="menu__item_link">Рекомендации</a></li>
+                        <li class="menu__item"><a href="{% url 'quiz' %}" class="menu__item_link">Рекомендации</a></li>
                         <li class="menu__item"><a href="{% url 'consultation' %}" class="menu__item_link">Контакты</a></li>
                     </ul>
                 </nav>
