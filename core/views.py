@@ -139,5 +139,4 @@ def result(request):
         "occasion": request.session.get('quiz_occasion'),
         "budget": request.session.get('quiz_budget'),
     }
-    print(request.session['quiz_results'])
     return render(request, "result.html", {"bouquet": bouquet})
