@@ -508,6 +508,9 @@ input::placeholder {
 .result__items_btn {
     width: 340px;
     height: 57px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .result__items_line {
     width: 333px;
@@ -525,6 +528,9 @@ input::placeholder {
 .result__items_block__btn {
     margin-bottom: 10px;
     margin-top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .result__items_block__btn:last-child {
     margin-bottom: 0;

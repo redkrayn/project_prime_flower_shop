@@ -123,6 +123,7 @@ def result(request):
         found_bouquet = Bouquet.objects.first()
 
     bouquet = {
+        "id": found_bouquet.id,
         "name": found_bouquet.name,
         "price": found_bouquet.price,
         "description": found_bouquet.description,
