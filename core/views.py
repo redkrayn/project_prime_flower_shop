@@ -88,12 +88,12 @@ def consultation(request):
     )
     consultation.save()
     send_msg_to_florist(customer.first_name, customer.phone_number, consultation.created_at)
-        consultation = Consultation.objects.create(
-            first_name=first_name,
-            phone_number=phone_number
-        )
-        consultation.save()
-        send_msg_to_florist(first_name, phone_number, consultation.created_at)
+    consultation = Consultation.objects.create(
+        first_name=first_name,
+        phone_number=phone_number
+    )
+    consultation.save()
+    send_msg_to_florist(first_name, phone_number, consultation.created_at)
     return render(request, 'index.html')
 
 
