@@ -41,6 +41,21 @@ class Customer(models.Model):
         verbose_name_plural = 'Покупатели'
 
 
+class Courier(models.Model):
+    name = models.CharField('Имя курьера', max_length=100)
+    phone_number = PhoneNumberField('Номер телефона', blank=True)
+    tg_chat_id = models.PositiveBigIntegerField(verbose_name='Чат ID курьера в ТГ', blank=True, null=True)
+    is_active = models.BooleanField(verbose_name='Активен', default=True)
+    number_orders = models.PositiveIntegerField(verbose_name='Количество заказов', default=0)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Курьер'
+        verbose_name_plural = 'Курьеры'
+
+
 class Florist(models.Model):
     name = models.CharField(verbose_name='Имя флориста', max_length=100)
     phone_number = PhoneNumberField(verbose_name='Номер телефона', blank=True)
@@ -52,29 +67,38 @@ class Florist(models.Model):
         verbose_name_plural = 'Флористы'
 
 
-class Courier(models.Model):
-    name = models.CharField(verbose_name='Имя курьера', max_length=100)
-    phone_number = PhoneNumberField(verbose_name='Номер телефона', blank=True)
-    telegram_chat_id = models.CharField(verbose_name='Telegram Chat ID', max_length=50, blank=True, help_text='Для уведомлений о заказах')
-    def __str__(self):
-        return self.name
-    class Meta:
-        verbose_name = 'Курьер'
-        verbose_name_plural = 'Курьеры'
-
-
 class Order(models.Model):
-    customer = models.ForeignKey(Customer, verbose_name='Покупатель', on_delete=models.CASCADE)
-    bouquet = models.ForeignKey(Bouquet, verbose_name='Букет', related_name='orders', on_delete=models.CASCADE)
-    courier = models.ForeignKey(Courier, verbose_name='Курьер', on_delete=models.SET_NULL, null=True, blank=True)
-    delivery_address = models.CharField(verbose_name='Адрес доставки', max_length=256)
-    delivery_time = models.CharField(verbose_name='Время доставки', max_length=30)
-    created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
-    def __str__(self):
-        return f'{self.bouquet} для {self.customer}'
-    class Meta:
-        verbose_name = 'Заказ'
-        verbose_name_plural = 'Заказы'
+    customer = models.ForeignKey(
+        Customer,
+        verbose_name='Покупатель',
+        on_delete=models.CASCADE
+    )
+    bouquet = models.ForeignKey(
+        Bouquet,
+        verbose_name='Букет',
+        related_name='orders',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+    courier = models.ForeignKey(
+        Courier, verbose_name='Курьер',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        editable=False,
+    )
+
+    delivery_address = models.CharField(
+        verbose_name='Адрес доставки',
+        max_length=256
+    )
+    delivery_time = models.CharField(
+        verbose_name='Время доставки',
+        max_length=30
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_counted = models.BooleanField(verbose_name='Заказ учтен в статистике', default=False)
 
 
 class Consultation(models.Model):

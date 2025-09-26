@@ -15,3 +15,18 @@ def send_msg_to_florist(first_name, phone_number, consultation):
         'text': telegram_message
     }
     requests.post(telegram_url, data=telegram_data)
+
+
+def send_msg_to_courier(name_courier, first_name, phone_number, date):
+    telegram_message = (
+            f"Вам поступил новый заказ!{name_courier}\n"
+            f"От: {first_name}\n"
+            f"Телефон: {phone_number}\n"
+            f"Дата: {date}"
+        )
+    telegram_url = f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}/sendMessage"
+    telegram_data = {
+        'chat_id': settings.TELEGRAM_CHAT_ID,
+        'text': telegram_message
+    }
+    requests.post(telegram_url, data=telegram_data)
