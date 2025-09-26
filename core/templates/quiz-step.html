@@ -35,7 +35,7 @@
                     <h1 class="quiz__title">На какой бюджет рассчитываете?</h1>
                     <div class="quiz__elems fic">
                         {% for value, label in budgets %}
-                            <a href="{% url 'result' %}?occasion={{ occasion }}&budget={{ value }}" class="quiz__elem">{{ label }}</a>
+                            <a href="{% url 'result' %}?budget={{ value }}" class="quiz__elem">{{ label }}</a>
                         {% endfor %}
                     </div>
                     <div class="quiz__progress">

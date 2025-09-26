@@ -105,19 +105,21 @@ def quiz(request):
 
 def quiz_step(request):
     occasion = request.GET.get("occasion")
-    return render(request, "quiz-step.html", {
-        "occasion": occasion,
-        "budgets": Bouquet.BUDGETS
-    })
+    if occasion:
+        request.session['quiz_occasion'] = occasion
+        return redirect('quiz_step')
+    return render(request, "quiz-step.html", {"budgets": Bouquet.BUDGETS})
 
 
 def result(request):
-    occasion = request.GET.get("occasion")
     budget = request.GET.get("budget")
+    if budget:
+        request.session['quiz_budget'] = budget
+        return redirect('result')
 
     found_bouquet = Bouquet.objects.filter(
-        occasion=occasion,
-        budget=budget
+        occasion=request.session.get('quiz_occasion'),
+        budget=request.session.get('quiz_budget')
     ).order_by('?').first()
     if not found_bouquet:
         found_bouquet = Bouquet.objects.first()
@@ -130,4 +132,12 @@ def result(request):
         "composition": found_bouquet.composition,
         "image": found_bouquet.image
     }
+
+    request.session['quiz_results'] = {
+        "occasion": request.session.get('quiz_occasion'),
+        "budget": request.session.get('quiz_budget'),
+        "bouquet_id": found_bouquet.id,
+        "bouquet_name": found_bouquet.name
+    }
+    print(request.session['quiz_results'])
     return render(request, "result.html", {"bouquet": bouquet})
