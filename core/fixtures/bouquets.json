@@ -50,5 +50,369 @@
             "occasion": "no_occasion",
             "budget": "up_to_1000"
         }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 5,
+        "fields": {
+            "name": "Тестовый букет 1",
+            "image": "bouquets/test_bouquet_1.jpg",
+            "price": 800,
+            "description": "Бюджетный букет для свадьбы.",
+            "composition": "Роза, Лилия, Зелень",
+            "occasion": "wedding",
+            "budget": "up_to_1000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 6,
+        "fields": {
+            "name": "Тестовый букет 2",
+            "image": "bouquets/test_bouquet_2.jpg",
+            "price": 4000,
+            "description": "Букет среднего бюджета для свадьбы.",
+            "composition": "Роза, Гербера, Лилия",
+            "occasion": "wedding",
+            "budget": "1000_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 7,
+        "fields": {
+            "name": "Тестовый букет 3",
+            "image": "bouquets/test_bouquet_3.jpg",
+            "price": 6000,
+            "description": "Дорогой букет для свадьбы.",
+            "composition": "Орхидея, Роза, Лилия",
+            "occasion": "wedding",
+            "budget": "from_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 8,
+        "fields": {
+            "name": "Тестовый букет 4",
+            "image": "bouquets/test_bouquet_4.jpg",
+            "price": 900,
+            "description": "Бюджетный букет для свадьбы.",
+            "composition": "Гвоздика, Роза, Зелень",
+            "occasion": "wedding",
+            "budget": "up_to_1000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 9,
+        "fields": {
+            "name": "Тестовый букет 5",
+            "image": "bouquets/test_bouquet_5.jpg",
+            "price": 1500,
+            "description": "Букет среднего бюджета для дня рождения.",
+            "composition": "Роза, Тюльпан, Лилия",
+            "occasion": "birthday",
+            "budget": "1000_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 10,
+        "fields": {
+            "name": "Тестовый букет 6",
+            "image": "bouquets/test_bouquet_6.jpg",
+            "price": 700,
+            "description": "Бюджетный букет для дня рождения.",
+            "composition": "Роза, Хризантема, Зелень",
+            "occasion": "birthday",
+            "budget": "up_to_1000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 11,
+        "fields": {
+            "name": "Тестовый букет 7",
+            "image": "bouquets/test_bouquet_7.jpg",
+            "price": 6500,
+            "description": "Дорогой букет для дня рождения.",
+            "composition": "Орхидея, Роза, Гипсофила",
+            "occasion": "birthday",
+            "budget": "from_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 12,
+        "fields": {
+            "name": "Тестовый букет 8",
+            "image": "bouquets/test_bouquet_8.jpg",
+            "price": 2000,
+            "description": "Букет среднего бюджета для дня рождения.",
+            "composition": "Роза, Эустома, Лилия",
+            "occasion": "birthday",
+            "budget": "1000_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 13,
+        "fields": {
+            "name": "Тестовый букет 9",
+            "image": "bouquets/test_bouquet_9.jpg",
+            "price": 900,
+            "description": "Бюджетный букет без повода.",
+            "composition": "Ромашка, Василёк, Лаванда",
+            "occasion": "no_occasion",
+            "budget": "up_to_1000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 14,
+        "fields": {
+            "name": "Тестовый букет 10",
+            "image": "bouquets/test_bouquet_10.jpg",
+            "price": 3000,
+            "description": "Букет среднего бюджета без повода.",
+            "composition": "Альстромерия, Роза, Эустома",
+            "occasion": "no_occasion",
+            "budget": "1000_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 15,
+        "fields": {
+            "name": "Тестовый букет 11",
+            "image": "bouquets/test_bouquet_11.jpg",
+            "price": 5500,
+            "description": "Дорогой букет без повода.",
+            "composition": "Орхидея, Роза, Лилия",
+            "occasion": "no_occasion",
+            "budget": "from_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 16,
+        "fields": {
+            "name": "Тестовый букет 12",
+            "image": "bouquets/test_bouquet_12.jpg",
+            "price": 800,
+            "description": "Бюджетный букет без повода.",
+            "composition": "Ромашка, Гвоздика, Зелень",
+            "occasion": "no_occasion",
+            "budget": "up_to_1000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 17,
+        "fields": {
+            "name": "Тестовый букет 13",
+            "image": "bouquets/test_bouquet_13.jpg",
+            "price": 1000,
+            "description": "Бюджетный букет для другого повода.",
+            "composition": "Роза, Лилия, Эустома",
+            "occasion": "other",
+            "budget": "up_to_1000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 18,
+        "fields": {
+            "name": "Тестовый букет 14",
+            "image": "bouquets/test_bouquet_14.jpg",
+            "price": 3000,
+            "description": "Букет среднего бюджета для другого повода.",
+            "composition": "Роза, Тюльпан, Лилия",
+            "occasion": "other",
+            "budget": "1000_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 19,
+        "fields": {
+            "name": "Тестовый букет 15",
+            "image": "bouquets/test_bouquet_15.jpg",
+            "price": 6000,
+            "description": "Дорогой букет для другого повода.",
+            "composition": "Орхидея, Роза, Гипсофила",
+            "occasion": "other",
+            "budget": "from_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 20,
+        "fields": {
+            "name": "Тестовый букет 16",
+            "image": "bouquets/test_bouquet_16.jpg",
+            "price": 900,
+            "description": "Бюджетный букет для другого повода.",
+            "composition": "Ромашка, Гвоздика, Зелень",
+            "occasion": "other",
+            "budget": "up_to_1000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 21,
+        "fields": {
+            "name": "Тестовый букет 17",
+            "image": "bouquets/test_bouquet_17.jpg",
+            "price": 1200,
+            "description": "Букет среднего бюджета для свадьбы.",
+            "composition": "Роза, Эустома, Лилия",
+            "occasion": "wedding",
+            "budget": "1000_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 22,
+        "fields": {
+            "name": "Тестовый букет 18",
+            "image": "bouquets/test_bouquet_18.jpg",
+            "price": 5200,
+            "description": "Дорогой букет для свадьбы.",
+            "composition": "Орхидея, Роза, Гипсофила",
+            "occasion": "wedding",
+            "budget": "from_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 23,
+        "fields": {
+            "name": "Тестовый букет 19",
+            "image": "bouquets/test_bouquet_19.jpg",
+            "price": 1500,
+            "description": "Букет среднего бюджета для дня рождения.",
+            "composition": "Роза, Лилия, Эустома",
+            "occasion": "birthday",
+            "budget": "1000_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 24,
+        "fields": {
+            "name": "Тестовый букет 20",
+            "image": "bouquets/test_bouquet_20.jpg",
+            "price": 700,
+            "description": "Бюджетный букет для дня рождения.",
+            "composition": "Роза, Хризантема, Зелень",
+            "occasion": "birthday",
+            "budget": "up_to_1000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 25,
+        "fields": {
+            "name": "Тестовый букет 21",
+            "image": "bouquets/test_bouquet_21.jpg",
+            "price": 6200,
+            "description": "Дорогой букет для дня рождения.",
+            "composition": "Орхидея, Роза, Гипсофила",
+            "occasion": "birthday",
+            "budget": "from_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 26,
+        "fields": {
+            "name": "Тестовый букет 22",
+            "image": "bouquets/test_bouquet_22.jpg",
+            "price": 950,
+            "description": "Бюджетный букет для дня рождения.",
+            "composition": "Ромашка, Гвоздика, Зелень",
+            "occasion": "birthday",
+            "budget": "up_to_1000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 27,
+        "fields": {
+            "name": "Тестовый букет 23",
+            "image": "bouquets/test_bouquet_23.jpg",
+            "price": 1800,
+            "description": "Букет среднего бюджета для другого повода.",
+            "composition": "Роза, Тюльпан, Лилия",
+            "occasion": "other",
+            "budget": "1000_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 28,
+        "fields": {
+            "name": "Тестовый букет 24",
+            "image": "bouquets/test_bouquet_24.jpg",
+            "price": 700,
+            "description": "Бюджетный букет для другого повода.",
+            "composition": "Ромашка, Гвоздика, Зелень",
+            "occasion": "other",
+            "budget": "up_to_1000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 29,
+        "fields": {
+            "name": "Тестовый букет 25",
+            "image": "bouquets/test_bouquet_25.jpg",
+            "price": 5800,
+            "description": "Дорогой букет для другого повода.",
+            "composition": "Орхидея, Роза, Лилия",
+            "occasion": "other",
+            "budget": "from_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 30,
+        "fields": {
+            "name": "Тестовый букет 26",
+            "image": "bouquets/test_bouquet_26.jpg",
+            "price": 900,
+            "description": "Бюджетный букет для свадьбы.",
+            "composition": "Гвоздика, Роза, Лилия",
+            "occasion": "wedding",
+            "budget": "up_to_1000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 31,
+        "fields": {
+            "name": "Тестовый букет 27",
+            "image": "bouquets/test_bouquet_27.jpg",
+            "price": 4000,
+            "description": "Букет среднего бюджета для свадьбы.",
+            "composition": "Роза, Лилия, Эустома",
+            "occasion": "wedding",
+            "budget": "1000_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 32,
+        "fields": {
+            "name": "Тестовый букет 28",
+            "image": "bouquets/test_bouquet_28.jpg",
+            "price": 6200,
+            "description": "Дорогой букет для свадьбы.",
+            "composition": "Орхидея, Роза, Лилия",
+            "occasion": "wedding",
+            "budget": "from_5000"
+        }
     }
 ]
