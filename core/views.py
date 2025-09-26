@@ -80,8 +80,8 @@ def consultation(request):
         )
 
     quiz_results = request.session.pop('quiz_results', None)
-    first_name = request.POST.get('name')
-    phone_number = request.POST.get('tel')
+    first_name = request.POST.get('first_name')
+    phone_number = request.POST.get('phone_number')
 
     customer, created = Customer.objects.get_or_create(
             first_name=first_name,
