@@ -141,6 +141,15 @@ input::placeholder {
 .banner__btn {
     width: 188px;
     height: 57px;
+    padding: 0 30px;
+    line-height: 57px;
+    text-align: center;
+}
+.recommended {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
 }
 .recommended__block {
     display: flex;
@@ -180,6 +189,7 @@ input::placeholder {
     background: #17CF97;
     color: #FFFFFF;
 }
+
 .contacts {
     padding-bottom: 100px;
 }
@@ -191,6 +201,7 @@ input::placeholder {
     height: 316px;
 }
 .contacts__btn {
+    margin-top: 40px;
     width: 100%;
     height: 57px;
     background: #D9FAF1;
