@@ -88,11 +88,21 @@ def quiz_step(request):
 
 
 def result(request):
+    occasion = request.GET.get("occasion")
+    budget = request.GET.get("budget")
+
+    found_bouquet = Bouquet.objects.filter(
+        occasion=occasion,
+        budget=budget
+    ).order_by('?').first()
+    if not found_bouquet:
+        found_bouquet = Bouquet.objects.first()
+
     bouquet = {
-        "name": "Летнее утро",
-        "price": 3600,
-        "description": "Этот букет передает атмосферу летнего утра в деревне. Букет создан из свежих полевых цветов, собранных вручную.",
-        "composition": "Альстромерия белая, Эустома белая, Ромашка, Роза пионовидная",
-        "image": "img/cardImg.jpg"
+        "name": found_bouquet.name,
+        "price": found_bouquet.price,
+        "description": found_bouquet.description,
+        "composition": found_bouquet.composition,
+        "image": found_bouquet.image
     }
     return render(request, "result.html", {"bouquet": bouquet})
