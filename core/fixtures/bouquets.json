@@ -1,0 +1,54 @@
+[
+    {
+        "model": "core.bouquet",
+        "pk": 1,
+        "fields": {
+            "name": "Летнее утро",
+            "image": "bouquets/catalogBg1.jpg",
+            "price": 3600,
+            "description": "Этот букет передаёт атмосферу летнего утра в деревне. Свежие полевые цветы, собранные вручную.",
+            "composition": "Альстромерия белая, Эустома белая, Ромашка, Роза пионовидная",
+            "occasion": "no_occasion",
+            "budget": "1000_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 2,
+        "fields": {
+            "name": "Пламенный закат",
+            "image": "bouquets/catalogBg2.jpg",
+            "price": 4200,
+            "description": "Яркий букет, вдохновлённый красками заката. Идеален для особых случаев.",
+            "composition": "Роза красная, Гербера, Лилия, Зелень",
+            "occasion": "wedding",
+            "budget": "from_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 3,
+        "fields": {
+            "name": "Нежный",
+            "image": "bouquets/catalogBg3.jpg",
+            "price": 2900,
+            "description": "Нежный и утончённый букет для романтических моментов.",
+            "composition": "Роза белая, Эустома, Хризантема, Гипсофила",
+            "occasion": "birthday",
+            "budget": "1000_5000"
+        }
+    },
+    {
+        "model": "core.bouquet",
+        "pk": 4,
+        "fields": {
+            "name": "Полевой",
+            "image": "bouquets/catalogBg4.jpg",
+            "price": 1600,
+            "description": "Простой и очаровательный букет из полевых цветов.",
+            "composition": "Ромашка, Василёк, Зелень, Лаванда",
+            "occasion": "no_occasion",
+            "budget": "up_to_1000"
+        }
+    }
+]
