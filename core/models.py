@@ -77,6 +77,9 @@ class Customer(models.Model):
 class Courier(models.Model):
     name = models.CharField('Имя курьера', max_length=100)
     phone_number = PhoneNumberField('Номер телефона', blank=True)
+    tg_chat_id = models.PositiveBigIntegerField(verbose_name='Чат ID курьера в ТГ', blank=True, null=True)
+    is_active = models.BooleanField(verbose_name='Активен', default=True)
+    number_orders = models.PositiveIntegerField(verbose_name='Количество заказов', default=0)
 
     def __str__(self):
         return self.name
@@ -118,7 +121,8 @@ class Order(models.Model):
         Courier, verbose_name='Курьер',
         on_delete=models.SET_NULL,
         null=True,
-        blank=True
+        blank=True,
+        editable=False,
     )
 
     delivery_address = models.CharField(
@@ -130,6 +134,7 @@ class Order(models.Model):
         max_length=30
     )
     created_at = models.DateTimeField(auto_now_add=True)
+    is_counted = models.BooleanField(verbose_name='Заказ учтен в статистике', default=False)
 
     def __str__(self):
         return f'{self.bouquet} для {self.customer}'
