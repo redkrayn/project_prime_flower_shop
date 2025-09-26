@@ -2,7 +2,7 @@ import requests
 from django.conf import settings
 
 
-def send_msg_to_florist(first_name, phone_number, consultation):
+def send_msg_to_florist(first_name, phone_number, consultation, quiz_result=None):
     telegram_message = (
             f"Новая заявка на консультацию для флориста!\n"
             f"Имя: {first_name}\n"

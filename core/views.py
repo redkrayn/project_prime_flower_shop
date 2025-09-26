@@ -73,28 +73,30 @@ def bouquet_detail(request, bouquet_id):
 
 
 def consultation(request):
-    if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        phone_number = request.POST.get('phone_number')
+    if request.method == 'GET':
+        return render(
+            request,
+            'consultation.html'
+        )
+
+    quiz_results = request.session.pop('quiz_results', None)
+    first_name = request.POST.get('name')
+    phone_number = request.POST.get('tel')
 
     customer, created = Customer.objects.get_or_create(
             first_name=first_name,
             phone_number=phone_number,
             defaults={'last_name': ''}
         )
+    consultation = Consultation.objects.create(customer=customer)
 
-    consultation = Consultation.objects.create(
-        customer=customer,
+    send_msg_to_florist(
+        customer.first_name,
+        customer.phone_number,
+        consultation.created_at,
+        quiz_results
     )
-    consultation.save()
-    send_msg_to_florist(customer.first_name, customer.phone_number, consultation.created_at)
-    consultation = Consultation.objects.create(
-        first_name=first_name,
-        phone_number=phone_number
-    )
-    consultation.save()
-    send_msg_to_florist(first_name, phone_number, consultation.created_at)
-    return render(request, 'index.html')
+    return redirect('index')
 
 
 def quiz(request):
@@ -136,8 +138,6 @@ def result(request):
     request.session['quiz_results'] = {
         "occasion": request.session.get('quiz_occasion'),
         "budget": request.session.get('quiz_budget'),
-        "bouquet_id": found_bouquet.id,
-        "bouquet_name": found_bouquet.name
     }
     print(request.session['quiz_results'])
     return render(request, "result.html", {"bouquet": bouquet})
