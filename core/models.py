@@ -97,7 +97,7 @@ class Order(models.Model):
         verbose_name='Время доставки',
         max_length=30
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     payment_status = models.CharField(
         verbose_name='Статус оплаты',
         max_length=20,
@@ -127,16 +127,3 @@ class Consultation(models.Model):
     class Meta:
         verbose_name = 'Заявка на консультацию'
         verbose_name_plural = 'Заявки на консультацию'
-
-
-class Payment(models.Model):
-    order = models.OneToOneField(Order, verbose_name='Заказ', on_delete=models.CASCADE)
-    payment_id = models.CharField(verbose_name='ID платежа', max_length=36, unique=True)
-    status = models.CharField(verbose_name='Статус', max_length=50, default='pending')
-    amount = models.DecimalField(verbose_name='Сумма', max_digits=10, decimal_places=2)
-    created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
-    def __str__(self):
-        return f'Платёж для заказа {self.order.id} ({self.status})'
-    class Meta:
-        verbose_name = 'Платёж'
-        verbose_name_plural = 'Платежи'
