@@ -1,6 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.urls import reverse
+import json
+from yookassa import Payment as YooPayment
+
 from .models import Bouquet, Customer, Order, Courier, Consultation
+from .yookassa_service import create_payment
 from .send_msg_tg import send_msg_to_florist, send_msg_to_courier
 
 
@@ -16,7 +23,6 @@ def order(request):
         'с 14:00 до 16:00', 'с 16:00 до 18:00', 'с 18:00 до 20:00'
     ]
     if request.method == 'POST':
-        bouquet_id = request.POST.get('bouquet')
         first_name = request.POST.get('first_name')
         phone_number = request.POST.get('phone_number')
         delivery_address = request.POST.get('delivery_address')
@@ -27,7 +33,9 @@ def order(request):
             phone_number=phone_number,
             defaults={'last_name': ''}
         )
-        
+
+        bouquet_id = request.session.get('selected_bouquet_id')
+        bouquet_price = Bouquet.objects.get(id=bouquet_id)
         courier = Courier.objects.filter(is_active=True).order_by('number_orders').first()
 
         order = Order(
@@ -35,19 +43,21 @@ def order(request):
             bouquet_id=bouquet_id,
             delivery_address=delivery_address,
             delivery_time=delivery_time,
-            is_counted=True,
-            courier=courier
+            is_counted=False,
+            courier=courier,
+            amount=bouquet_price.price
         )
         order.save()
 
-        courier.number_orders += 1
-        courier.save()
-        send_msg_to_courier(courier.name, 
-                            customer.first_name, 
-                            customer.phone_number, 
-                            order.delivery_time)
-        
+        return_url = request.build_absolute_uri(reverse('payment_success'))
+        payment = create_payment(order, return_url)
+
+        order.yookassa_payment_id = payment.id
+        order.save()
+
         request.session['order_id'] = order.id
+
+        return redirect(payment.confirmation.confirmation_url)
 
     return render(request, 'order.html', {
         'bouquets': bouquets,
@@ -55,14 +65,93 @@ def order(request):
     })
 
 
-def order_step(request):
-    return render(request, 'order-step.html')
+def payment_success(request):
+    order_id = request.session.get('order_id')
+    if order_id:
+        order = get_object_or_404(Order, id=order_id)
+
+        payment = YooPayment.find_one(order.yookassa_payment_id)
+
+        if payment.status == 'succeeded':
+            order.payment_status = 'paid'
+            order.is_counted = True
+
+            if order.courier:
+                order.courier.number_orders += 1
+                order.courier.save()
+
+            order.save()
+
+            send_msg_to_courier(
+                order.courier.name if order.courier else 'Курьер',
+                order.customer.first_name,
+                order_id,
+                order.customer.phone_number,
+                order.delivery_time,
+            )
+
+            if 'order_id' in request.session:
+                del request.session['order_id']
+
+            bouquets = Bouquet.objects.all().order_by('id')
+            paginator = Paginator(bouquets, 6)
+            page_number = request.GET.get('page', 1)
+            page_obj = paginator.get_page(page_number)
+            return render(request, 'catalog.html', {'page_obj': page_obj})
+
+        else:
+            if 'order_id' in request.session:
+                del request.session['order_id']
+            return redirect('payment_failed')
+
+
+def payment_failed(request):
+    order_id = request.session.get('order_id')
+    if order_id:
+        order = get_object_or_404(Order, id=order_id)
+        order.payment_status = 'failed'
+        order.save()
+
+    return render(request, 'payment_failed.html')
+
+
+@csrf_exempt
+def yookassa_webhook(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            payment_id = data['object']['id']
+
+            order = Order.objects.get(yookassa_payment_id=payment_id)
+            payment = YooPayment.find_one(payment_id)
+
+            if payment.status == 'succeeded':
+                order.payment_status = 'paid'
+                order.is_counted = True
+
+                if order.courier:
+                    order.courier.number_orders += 1
+                    order.courier.save()
+
+                order.save()
+
+                send_msg_to_courier(
+                    order.courier.name if order.courier else 'Курьер',
+                    order.customer.first_name,
+                    order.customer.phone_number,
+                    order.delivery_time
+                )
+
+        except Exception as e:
+            print(f"Error processing webhook: {e}")
+
+    return HttpResponse(status=200)
 
 
 def catalog(request):
     bouquets = Bouquet.objects.all().order_by('id')  
     paginator = Paginator(bouquets, 6)  
-    page_number = request.GET.get('page')
+    page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
     return render(request, 'catalog.html', {'page_obj': page_obj})
 
@@ -125,6 +214,8 @@ def result(request):
     ).order_by('?').first()
     if not found_bouquet:
         found_bouquet = Bouquet.objects.first()
+
+    request.session['selected_bouquet_id'] = found_bouquet.id
 
     bouquet = {
         "id": found_bouquet.id,

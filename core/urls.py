@@ -1,6 +1,9 @@
 from django.urls import path
-from .views import index, quiz, quiz_step, result, catalog, consultation, order, order_step, bouquet_detail
-
+from .views import (
+    index, quiz, quiz_step, result, catalog, consultation,
+    order, bouquet_detail, yookassa_webhook, payment_failed,
+    payment_success
+)
 
 urlpatterns = [
     path('', index, name='index'),
@@ -11,5 +14,7 @@ urlpatterns = [
     path('bouquet/<int:bouquet_id>/', bouquet_detail, name='bouquet_detail'),
     path('consultation/', consultation, name='consultation'),
     path('order/', order, name='order'),
-    path('order-step/', order_step, name='order_step'),
+    path('payment/success/', payment_success, name='payment_success'),
+    path('payment/failed/', payment_failed, name='payment_failed'),
+    path('yookassa-webhook/', yookassa_webhook, name='yookassa_webhook'),
 ]
