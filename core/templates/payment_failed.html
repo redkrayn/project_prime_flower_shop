@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата не прошла</title>
+</head>
+<body>
+    <div class="container">
+            <h1>Оплата не прошла</h1>
+
+            <div class="message">
+                <p>К сожалению, произошла ошибка при обработке платежа.</p>
+            </div>
+
+            <div class="order-info">
+                {% if order %}
+                    <p><strong>Номер заказа:</strong> №{{ order.id }}</p>
+                    {% if order.bouquet %}
+                        <p><strong>Букет:</strong> {{ order.bouquet.name }}</p>
+                        <p><strong>Сумма:</strong> {{ order.bouquet.price }} руб.</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <div class="actions">
+                <a href="{% url 'order' %}" class="btn btn-primary">
+                    Попробовать снова
+                </a>
+                <a href="{% url 'catalog' %}" class="btn btn-secondary">
+                    Выбрать другой букет
+                </a>
+                <a href="/" class="btn btn-link">
+                    Вернуться на главную
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
