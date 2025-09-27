@@ -98,6 +98,23 @@ class Order(models.Model):
         max_length=30
     )
     created_at = models.DateTimeField(auto_now_add=True)
+    payment_status = models.CharField(
+        verbose_name='Статус оплаты',
+        max_length=20,
+        choices=[
+            ('pending', 'Ожидает оплаты'),
+            ('paid', 'Оплачено'),
+            ('failed', 'Ошибка оплаты')
+        ],
+        default='pending'
+    )
+    yookassa_payment_id = models.CharField(verbose_name='Id оплаты', max_length=100, blank=True, null=True)
+    amount = models.DecimalField(
+        verbose_name='Сумма заказа',
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
     is_counted = models.BooleanField(verbose_name='Заказ учтен в статистике', default=False)
 
 
