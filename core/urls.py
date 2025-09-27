@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     index, quiz, quiz_step, result, catalog, consultation,
     order, bouquet_detail, yookassa_webhook, payment_failed,
-    payment_success
+    payment_success, load_more_bouquets
 )
 
 urlpatterns = [
