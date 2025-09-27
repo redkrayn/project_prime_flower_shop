@@ -21,6 +21,8 @@ def index(request):
 
 def order(request):
     bouquets = Bouquet.objects.all()
+    bouquet_id = request.session.get('selected_bouquet_id')
+
     delivery_times = [
         'Как можно скорее', 'с 10:00 до 12:00', 'с 12:00 до 14:00',
         'с 14:00 до 16:00', 'с 16:00 до 18:00', 'с 18:00 до 20:00'
@@ -37,7 +39,6 @@ def order(request):
             defaults={'last_name': ''}
         )
 
-        bouquet_id = request.session.get('selected_bouquet_id')
         bouquet_price = Bouquet.objects.get(id=bouquet_id)
         courier = Courier.objects.filter(is_active=True).order_by('number_orders').first()
 
@@ -176,6 +177,7 @@ def load_more_bouquets(request):
 
 def bouquet_detail(request, bouquet_id):
     bouquet = get_object_or_404(Bouquet, id=bouquet_id)
+    request.session['selected_bouquet_id'] = bouquet_id
     return render(request, 'card.html', {'bouquet': bouquet})
 
 
