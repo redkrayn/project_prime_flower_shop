@@ -3,6 +3,9 @@ from django.core.paginator import Paginator
 from .models import Bouquet, Customer, Order, Courier, Consultation
 from .send_msg_tg import send_msg_to_florist, send_msg_to_courier
 
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+
 
 def index(request):
     recommended = Bouquet.objects.all()[:3]
@@ -60,11 +63,26 @@ def order_step(request):
 
 
 def catalog(request):
-    bouquets = Bouquet.objects.all().order_by('id')  
+    bouquets = Bouquet.objects.all()
     paginator = Paginator(bouquets, 6)  
-    page_number = request.GET.get('page')
+    page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
     return render(request, 'catalog.html', {'page_obj': page_obj})
+
+
+def load_more_bouquets(request):
+    page = int(request.GET.get('page', 1))
+    bouquets = Bouquet.objects.all()
+    paginator = Paginator(bouquets, 6)  
+    if page <= paginator.num_pages:
+        page_obj = paginator.page(page)
+        html = render_to_string('bouquets_partial.html', {'page_obj': page_obj})
+        return JsonResponse({
+            'html': html,
+            'has_next': page_obj.has_next(),
+            'next_page': page_obj.next_page_number() if page_obj.has_next() else None
+        })
+    return JsonResponse({'html': '', 'has_next': False})
 
 
 def bouquet_detail(request, bouquet_id):

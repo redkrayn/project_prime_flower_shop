@@ -42,6 +42,12 @@
                             <span class="card_items_intro">{{ bouquet.composition|linebreaksbr }}</span>
                         </div>
                     </div>
+                    <div class="card__elems">
+                        <span class="card__elems_intro">Описание</span>
+                        <div class="card__items">
+                            <span class="card_items_intro">{{ bouquet.description|linebreaksbr }}</span>
+                        </div>
+                    </div>
                     <a href="{% url 'order' %}?bouquet={{ bouquet.id }}" class="btn largeBtn card__btn">Заказать букет</a>
                 </div>
             </div>

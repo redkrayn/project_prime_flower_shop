@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index, quiz, quiz_step, result, catalog, consultation, order, order_step, bouquet_detail
+from .views import index, quiz, quiz_step, result, catalog, consultation, order, order_step, bouquet_detail, load_more_bouquets
 
 
 urlpatterns = [
@@ -12,4 +12,5 @@ urlpatterns = [
     path('consultation/', consultation, name='consultation'),
     path('order/', order, name='order'),
     path('order-step/', order_step, name='order_step'),
+    path('load-more-bouquets/', load_more_bouquets, name='load_more_bouquets'),
 ]
