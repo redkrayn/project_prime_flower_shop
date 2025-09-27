@@ -17,4 +17,6 @@ urlpatterns = [
     path('payment/success/', payment_success, name='payment_success'),
     path('payment/failed/', payment_failed, name='payment_failed'),
     path('yookassa-webhook/', yookassa_webhook, name='yookassa_webhook'),
+    path('load-more-bouquets/', load_more_bouquets, name='load_more_bouquets'),
 ]
+
