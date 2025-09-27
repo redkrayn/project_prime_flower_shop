@@ -1,0 +1,54 @@
+{% extends "admin/change_list.html" %}
+
+{% block content %}
+
+<div style="margin-bottom: 20px; padding: 15px; background: #000000; border: 1px solid #333; color: #ffffff;">
+    <h2 style="color: #ffffff; margin-bottom: 20px; font-size: 24px; margin-top: -5px">Статистика</h2>
+
+    {% if total_amount is not None %}
+        <p><strong>Общая сумма всех заказов:</strong> {{ total_amount }} руб.</p>
+    {% endif %}
+
+    {% if current_status == 'paid' and totals.paid %}
+        <p><strong>Сумма оплаченных заказов:</strong> {{ totals.paid }} руб.</p>
+    {% elif current_status == 'pending' and totals.pending %}
+        <p><strong>Сумма заказов в ожидании:</strong> {{ totals.pending }} руб.</p>
+    {% elif current_status == 'failed' and totals.failed %}
+        <p><strong>Сумма неудачных заказов:</strong> {{ totals.failed }} руб.</p>
+    {% endif %}
+
+    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #333;">
+        <h3 style="color: #ffffff;">Топ-3 самых частых покупателей:</h3>
+        {% if top_customers %}
+            <ol>
+                {% for customer in top_customers %}
+                    <li style="margin-bottom: 8px;">
+                        <strong>Телефон:</strong> {{ customer.phone_number }}
+                        <strong>Количество заказов:</strong> {{ customer.order_count }}
+                    </li>
+                {% endfor %}
+            </ol>
+        {% else %}
+            <p>Нет данных о покупателях</p>
+        {% endif %}
+    </div>
+
+    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #333;">
+        <h3 style="color: #ffffff;">Топ-3 самых популярных букетов:</h3>
+        {% if top_bouquets %}
+            <ol>
+                {% for bouquet in top_bouquets %}
+                    <li style="margin-bottom: 8px;">
+                        <strong>Букет:</strong> {{ bouquet.name }}
+                        <strong>Количество заказов:</strong> {{ bouquet.order_count }}
+                    </li>
+                {% endfor %}
+            </ol>
+        {% else %}
+            <p>Нет данных о букетах</p>
+        {% endif %}
+    </div>
+</div>
+
+{{ block.super }}
+{% endblock %}
