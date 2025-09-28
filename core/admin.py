@@ -5,7 +5,7 @@ from django.utils.html import format_html
 from django.http import HttpResponse
 from django.db.models import Count
 
-from .models import Bouquet, Customer, Courier, Order, Consultation
+from .models import Bouquet, Customer, Courier, Order, Consultation, Florist
 
 import codecs
 import csv
@@ -180,4 +180,5 @@ class OrderAdmin(admin.ModelAdmin, ExportCsvMixin):
 
 admin.site.register(Customer)
 admin.site.register(Courier)
+admin.site.register(Florist)
 admin.site.register(Consultation)
