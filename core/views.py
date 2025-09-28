@@ -182,21 +182,26 @@ def bouquet_detail(request, bouquet_id):
 
 
 def consultation(request):
+    occasion = request.GET.get("occasion")
+    budget = request.GET.get("budget")
+    quiz_results = None
+    if occasion and budget:
+        quiz_results = {"occasion": occasion, "budget": budget}
+
     if request.method == 'GET':
         return render(
             request,
             'consultation.html'
         )
 
-    quiz_results = request.session.pop('quiz_results', None)
     first_name = request.POST.get('first_name')
     phone_number = request.POST.get('phone_number')
 
     customer, created = Customer.objects.get_or_create(
-            first_name=first_name,
-            phone_number=phone_number,
-            defaults={'last_name': ''}
-        )
+        first_name=first_name,
+        phone_number=phone_number,
+        defaults={'last_name': ''}
+    )
     consultation = Consultation.objects.create(customer=customer)
 
     send_msg_to_florist(
@@ -216,26 +221,29 @@ def quiz(request):
 
 def quiz_step(request):
     occasion = request.GET.get("occasion")
-    if occasion:
-        request.session['quiz_occasion'] = occasion
-        return redirect('quiz_step')
-    return render(request, "quiz-step.html", {"budgets": Bouquet.BUDGETS})
+    if not occasion:
+        return redirect("quiz")
+
+    return render(request, "quiz-step.html", {
+        "budgets": Bouquet.BUDGETS,
+        "occasion": occasion,
+    })
 
 
 def result(request):
+    occasion = request.GET.get("occasion")
     budget = request.GET.get("budget")
-    if budget:
-        request.session['quiz_budget'] = budget
-        return redirect('result')
+
+    if not occasion or not budget:
+        return redirect("quiz")
 
     found_bouquet = Bouquet.objects.filter(
-        occasion=request.session.get('quiz_occasion'),
-        budget=request.session.get('quiz_budget')
-    ).order_by('?').first()
+        occasion=occasion,
+        budget=budget
+    ).order_by("?").first()
+
     if not found_bouquet:
         found_bouquet = Bouquet.objects.first()
-
-    request.session['selected_bouquet_id'] = found_bouquet.id
 
     bouquet = {
         "id": found_bouquet.id,
@@ -243,11 +251,11 @@ def result(request):
         "price": found_bouquet.price,
         "description": found_bouquet.description,
         "composition": found_bouquet.composition,
-        "image": found_bouquet.image
+        "image": found_bouquet.image,
     }
 
-    request.session['quiz_results'] = {
-        "occasion": request.session.get('quiz_occasion'),
-        "budget": request.session.get('quiz_budget'),
-    }
-    return render(request, "result.html", {"bouquet": bouquet})
+    return render(request, "result.html", {
+        "bouquet": bouquet,
+        "occasion": occasion,
+        "budget": budget,
+    })
