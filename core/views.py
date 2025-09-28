@@ -113,6 +113,7 @@ def yookassa_webhook(request):
 
             if payment.status == 'succeeded':
                 order.payment_status = 'paid'
+                send_msg_to_courier(order)
                 order.save()
 
         except Exception as e:
@@ -208,6 +209,8 @@ def result(request):
 
     if not found_bouquet:
         found_bouquet = Bouquet.objects.first()
+
+    request.session['selected_bouquet_id'] = found_bouquet.id
 
     bouquet = {
         "id": found_bouquet.id,
