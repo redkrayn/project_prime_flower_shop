@@ -36,19 +36,18 @@ def order(request):
         customer, created = Customer.objects.get_or_create(
             name=name,
             phone_number=phone_number,
-            defaults={'last_name': ''}
         )
 
         bouquet_price = Bouquet.objects.get(id=bouquet_id)
-        courier = Courier.objects.filter(is_active=True).order_by('number_orders').first()
+        # courier = Courier.objects.filter(is_active=True).order_by('number_orders').first()
 
         order = Order(
             customer=customer,
             bouquet_id=bouquet_id,
             delivery_address=delivery_address,
             delivery_time=delivery_time,
-            is_counted=False,
-            courier=courier,
+            # is_counted=False,
+            # courier=courier,
             amount=bouquet_price.price
         )
         order.save()
@@ -60,7 +59,6 @@ def order(request):
         order.save()
 
         request.session['order_id'] = order.id
-
         return redirect(payment.confirmation.confirmation_url)
 
     return render(request, 'order.html', {
@@ -87,7 +85,6 @@ def payment_success(request):
             order.save()
 
             send_msg_to_courier(
-                order.courier.name if order.courier else 'Курьер',
                 order.customer.name,
                 order_id,
                 order.customer.phone_number,
@@ -131,11 +128,11 @@ def yookassa_webhook(request):
 
             if payment.status == 'succeeded':
                 order.payment_status = 'paid'
-                order.is_counted = True
+                # order.is_counted = True
 
-                if order.courier:
-                    order.courier.number_orders += 1
-                    order.courier.save()
+                # if order.courier:
+                #     order.courier.number_orders += 1
+                #     order.courier.save()
 
                 order.save()
 
@@ -200,7 +197,6 @@ def consultation(request):
     customer, created = Customer.objects.get_or_create(
         name=name,
         phone_number=phone_number,
-        defaults={'last_name': ''}
     )
     consultation = Consultation.objects.create(customer=customer)
 

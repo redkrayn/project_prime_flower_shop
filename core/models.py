@@ -54,7 +54,7 @@ class Bouquet(models.Model):
 
 
 class Customer(models.Model):
-    first_name = models.CharField(verbose_name='Имя', max_length=50)
+    name = models.CharField(verbose_name='Имя', max_length=50)
     phone_number = PhoneNumberField(verbose_name='Номер телефона', unique=True)
 
     def str(self):
@@ -161,7 +161,6 @@ class Order(models.Model):
         decimal_places=2,
         default=0
     )
-    is_counted = models.BooleanField(verbose_name='Заказ учтен в статистике', default=False)
 
 
 class Consultation(models.Model):

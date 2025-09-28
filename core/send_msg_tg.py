@@ -4,11 +4,11 @@ from django.conf import settings
 from core.models import Bouquet, Courier, Florist
 
 
-def get_employee_chat_id(role):
-    if role == 'courier':
-        employee = Courier.objects.filter(is_active)
-    else:
-        pass
+# def get_employee_chat_id(role):
+#     if role == 'courier':
+#         employee = Courier.objects.filter(is_active)
+#     else:
+#         pass
 
 
 def send_msg_to_florist(first_name, phone_number, consultation, quiz_results=None):
@@ -35,10 +35,10 @@ def send_msg_to_florist(first_name, phone_number, consultation, quiz_results=Non
     requests.post(telegram_url, data=telegram_data)
 
 
-def send_msg_to_courier(name_courier, first_name, order_id, phone_number, date):
+def send_msg_to_courier(name, order_id, phone_number, date):
     telegram_message = (
-            f"Вам поступил новый заказ! {name_courier}\n"
-            f"От: {first_name}\n"
+            f"Вам поступил новый заказ\n"
+            f"От: {name}\n"
             f"Идентификатор заказа: {order_id}\n"
             f"Телефон: {phone_number}\n"
             f"Дата: {date}"
