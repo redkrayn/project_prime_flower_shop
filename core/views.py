@@ -34,8 +34,8 @@ def order(request):
         delivery_time = request.POST.get('delivery_time')
 
         customer, created = Customer.objects.get_or_create(
-            name=name,
             phone_number=phone_number,
+            defaults={'name': name}
         )
 
         bouquet = Bouquet.objects.get(id=bouquet_id)
