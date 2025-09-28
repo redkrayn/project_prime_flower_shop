@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flower Shop - Политика конфиденциальности</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Unbounded:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <header id="header">
+        <div class="container">
+            <div class="header ficb">
+                <a href="{% url 'index' %}"><img src="{% static 'img/logo.svg' %}" alt="logo" class="logo"></a>
+                <nav>
+                    <ul class="menu ficc">
+                        <li class="menu__item"><a href="{% url 'catalog' %}" class="menu__item_link">Каталог</a></li>
+                        <li class="menu__item"><a href="{% url 'quiz' %}" class="menu__item_link">Рекомендации</a></li>
+                        <li class="menu__item"><a href="{% url 'consultation' %}" class="menu__item_link">Контакты</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <section id="privacy-policy">
+        <div class="container">
+            <div class="privacy-policy">
+                <h1 class="title">Политика конфиденциальности</h1>
+                <div class="privacy-policy__content">
+                    <h2>1. Общие положения</h2>
+                    <p>Настоящая Политика конфиденциальности (далее — Политика) действует в отношении всей информации, которую интернет-магазин «FlowerShop» (далее — FlowerShop) может получить о пользователе во время использования сайта.</p>
+
+                    <h2>2. Сбор и использование персональных данных</h2>
+                    <p>FlowerShop собирает и обрабатывает персональные данные, которые пользователь предоставляет добровольно при заполнении форм на сайте, включая, но не ограничиваясь, имя, номер телефона, адрес доставки. Эти данные используются для:</p>
+                    <ul>
+                        <li>Обработки заказов и доставки букетов;</li>
+                        <li>Предоставления консультаций;</li>
+                        <li>Улучшения качества обслуживания;</li>
+                        <li>Информирования о специальных предложениях (при согласии пользователя).</li>
+                    </ul>
+
+                    <h2>3. Защита персональных данных</h2>
+                    <p>FlowerShop принимает необходимые организационные и технические меры для защиты персональной информации пользователей от неправомерного доступа, уничтожения, изменения, блокирования, копирования, распространения, а также от иных неправомерных действий третьих лиц.</p>
+
+                    <h2>4. Передача данных третьим лицам</h2>
+                    <p>FlowerShop не передает персональные данные третьим лицам, за исключением случаев, предусмотренных законодательством Российской Федерации или при необходимости выполнения заказа (например, курьерским службам).</p>
+
+                    <h2>5. Права пользователей</h2>
+                    <p>Пользователь имеет право на доступ к своим персональным данным, их исправление, удаление или ограничение обработки. Для реализации этих прав пользователь может обратиться по контактным данным, указанным на сайте.</p>
+
+                    <h2>6. Срок хранения данных</h2>
+                    <p>Персональные данные хранятся в течение срока, необходимого для достижения целей обработки, если иное не предусмотрено законодательством.</p>
+
+                    <h2>7. Изменения в Политике конфиденциальности</h2>
+                    <p>FlowerShop оставляет за собой право вносить изменения в настоящую Политику. Новая редакция Политики вступает в силу с момента ее размещения на сайте.</p>
+
+                    <h2>8. Контактная информация</h2>
+                    <p>По всем вопросам, связанным с обработкой персональных данных, вы можете обратиться по телефону: <a href="tel:89111744460">8 (911) 17 44 460</a> или через форму обратной связи на сайте.</p>
+                </div>
+                <a href="{% url 'index' %}" class="btn privacy-policy__btn">Вернуться на главную</a>
+            </div>
+        </div>
+    </section>
+    <footer id="footer">
+        <div class="container">
+            <div class="footer">
+                <a href="{% url 'index' %}"><img src="{% static 'img/logo.svg' %}" alt="logo" class="logo footer__logo"></a>
+                <nav>
+                    <ul class="menu footer__menu ficc">
+                        <li class="menu__item"><a href="{% url 'catalog' %}" class="menu__item_link">Каталог</a></li>
+                        <li class="menu__item"><a href="{% url 'quiz' %}" class="menu__item_link">Рекомендации</a></li>
+                        <li class="menu__item"><a href="{% url 'consultation' %}" class="menu__item_link">Контакты</a></li>
+                    </ul>
+                </nav>
+                <hr class="line">
+                <a href="{% url 'privacy_policy' %}" class="footer__poli">Политика конфиденциальности</a>
+                <p class="footer_cop">©️2022. FlowerShop. Все права защищены</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

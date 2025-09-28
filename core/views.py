@@ -223,3 +223,7 @@ def result(request):
         "occasion": occasion,
         "budget": budget,
     })
+
+
+def privacy_policy(request):
+    return render(request, 'privacy_policy.html')
