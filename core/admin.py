@@ -95,6 +95,11 @@ class ExportCsvMixin:
             row = []
             for field in field_names:
                 value = getattr(obj, field)
+
+                field_obj = meta.get_field(field)
+                if field_obj.choices:
+                    value = getattr(obj, f'get_{field}_display')()
+
                 if callable(value):
                     value = value()
                 row.append(str(value) if value is not None else '')

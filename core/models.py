@@ -57,7 +57,7 @@ class Customer(models.Model):
     name = models.CharField(verbose_name='Имя', max_length=50)
     phone_number = PhoneNumberField(verbose_name='Номер телефона', unique=True)
 
-    def str(self):
+    def __str__(self):
         return f'{self.phone_number}'
 
     class Meta:
