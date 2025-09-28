@@ -107,7 +107,7 @@ class ExportCsvMixin:
 class OrderAdmin(admin.ModelAdmin, ExportCsvMixin):
     change_list_template = "change_list.html"
     actions = ["export_as_csv"]
-    list_display = ['get_customer_phone', 'bouquet', 'amount', 'payment_status', 'created_at']
+    list_display = ['customer', 'bouquet', 'amount', 'payment_status', 'created_at']
     list_filter = ['payment_status', 'created_at']
 
     def changelist_view(self, request, extra_context=None):
@@ -176,12 +176,6 @@ class OrderAdmin(admin.ModelAdmin, ExportCsvMixin):
                 'order_count': bouquet['order_count']
             })
         return top_bouquets
-
-    def get_customer_phone(self, obj):
-        return obj.customer.phone_number
-
-    get_customer_phone.short_description = 'Телефон покупателя'
-    get_customer_phone.admin_order_field = 'customer__phone_number'
 
 
 admin.site.register(Customer)
