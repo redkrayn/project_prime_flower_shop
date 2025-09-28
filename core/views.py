@@ -6,7 +6,7 @@ from django.urls import reverse
 import json
 from yookassa import Payment as YooPayment
 
-from .models import Bouquet, Customer, Order, Courier, Consultation
+from .models import Bouquet, Customer, Order, Consultation
 from .yookassa_service import create_payment
 from .send_msg_tg import send_msg_to_florist, send_msg_to_courier
 
@@ -32,23 +32,20 @@ def order(request):
         phone_number = request.POST.get('phone_number')
         delivery_address = request.POST.get('delivery_address')
         delivery_time = request.POST.get('delivery_time')
-        
+
         customer, created = Customer.objects.get_or_create(
             name=name,
             phone_number=phone_number,
         )
 
-        bouquet_price = Bouquet.objects.get(id=bouquet_id)
-        # courier = Courier.objects.filter(is_active=True).order_by('number_orders').first()
+        bouquet = Bouquet.objects.get(id=bouquet_id)
 
         order = Order(
             customer=customer,
             bouquet_id=bouquet_id,
             delivery_address=delivery_address,
             delivery_time=delivery_time,
-            # is_counted=False,
-            # courier=courier,
-            amount=bouquet_price.price
+            amount=bouquet.price
         )
         order.save()
 
@@ -71,25 +68,13 @@ def payment_success(request):
     order_id = request.session.get('order_id')
     if order_id:
         order = get_object_or_404(Order, id=order_id)
-
         payment = YooPayment.find_one(order.yookassa_payment_id)
 
         if payment.status == 'succeeded':
             order.payment_status = 'paid'
-            order.is_counted = True
-
-            if order.courier:
-                order.courier.number_orders += 1
-                order.courier.save()
-
             order.save()
 
-            send_msg_to_courier(
-                order.customer.name,
-                order_id,
-                order.customer.phone_number,
-                order.delivery_time,
-            )
+            send_msg_to_courier(order)
 
             if 'order_id' in request.session:
                 del request.session['order_id']
@@ -128,20 +113,7 @@ def yookassa_webhook(request):
 
             if payment.status == 'succeeded':
                 order.payment_status = 'paid'
-                # order.is_counted = True
-
-                # if order.courier:
-                #     order.courier.number_orders += 1
-                #     order.courier.save()
-
                 order.save()
-
-                send_msg_to_courier(
-                    order.courier.name if order.courier else 'Курьер',
-                    order.customer.name,
-                    order.customer.phone_number,
-                    order.delivery_time
-                )
 
         except Exception as e:
             print(f"Error processing webhook: {e}")
@@ -186,27 +158,23 @@ def consultation(request):
         quiz_results = {"occasion": occasion, "budget": budget}
 
     if request.method == 'GET':
-        return render(
-            request,
-            'consultation.html'
-        )
+        return render(request, 'consultation.html')
 
     name = request.POST.get('name')
     phone_number = request.POST.get('phone_number')
 
     customer, created = Customer.objects.get_or_create(
-        name=name,
         phone_number=phone_number,
+        defaults={'name': name}
     )
     consultation = Consultation.objects.create(customer=customer)
 
     send_msg_to_florist(
-        customer.name,
-        customer.phone_number,
-        consultation.created_at,
-        quiz_results
+        consultation=consultation,
+        quiz_results=quiz_results
     )
     return redirect('index')
+
 
 
 def quiz(request):

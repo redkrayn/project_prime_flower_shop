@@ -78,8 +78,8 @@ class Florist(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = 'Курьер'
-        verbose_name_plural = 'Курьеры'
+        verbose_name = 'Флорист'
+        verbose_name_plural = 'Флористы'
 
 
 class Courier(models.Model):
