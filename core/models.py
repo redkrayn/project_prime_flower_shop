@@ -171,6 +171,10 @@ class Order(models.Model):
 
 
 class Consultation(models.Model):
+    CONSULTATION_STATUS = [
+        ('waiting_for_consultation', 'Ожидается консультация'),
+        ('completed', 'Консультация предоставлена'),
+    ]
     customer = models.ForeignKey(
         Customer,
         verbose_name='Покупатель',
@@ -188,6 +192,12 @@ class Consultation(models.Model):
     created_at = models.DateTimeField(
         verbose_name='Дата создания',
         auto_now_add=True
+    )
+    status = models.CharField(
+        verbose_name='Статус консультации',
+        max_length=50,
+        choices=CONSULTATION_STATUS,
+        default='waiting_for_consultation'
     )
 
     def __str__(self):
