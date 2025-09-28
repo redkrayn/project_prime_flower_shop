@@ -7,6 +7,12 @@ Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
 
 
 def create_payment(order, return_url):
+    base_url = settings.NGROK_URL
+    if not base_url or not base_url.startswith('http'):
+        raise ValueError("NGROK_URL должен быть указан в настройках и начинаться с http или https")
+    
+    return_url = f"{base_url.rstrip('/')}{return_url}?orderId={order.id}" if return_url.startswith('/') else return_url
+
     payment = Payment.create({
         "amount": {
             "value": str(order.amount),
@@ -19,7 +25,7 @@ def create_payment(order, return_url):
         "capture": True,
         "description": f"Оплата заказа №{order.id}",
         "metadata": {
-            "order_id": order.id
+            "order_id": str(order.id)
         }
     }, str(uuid.uuid4()))
 

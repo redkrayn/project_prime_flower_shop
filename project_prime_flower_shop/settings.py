@@ -12,7 +12,11 @@ SECRET_KEY = env.str('SECRET_KEY')
 
 DEBUG = env.bool('DEBUG')
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'hypermotile-nonconspiring-annetta.ngrok-free.dev']
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://hypermotile-nonconspiring-annetta.ngrok-free.dev',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -84,3 +88,5 @@ TELEGRAM_DEFAULT_CHAT_ID = env.str('TELEGRAM_DEFAULT_CHAT_ID')
 
 YOOKASSA_SHOP_ID = env.str('YOOKASSA_SHOP_ID')
 YOOKASSA_SECRET_KEY = env.str('YOOKASSA_SECRET_KEY')
+
+NGROK_URL = env.str('NGROK_URL', default='https://hypermotile-nonconspiring-annetta.ngrok-free.dev')

@@ -5,14 +5,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 import json
 from yookassa import Payment as YooPayment
-
+from django.conf import settings
 from .models import Bouquet, Customer, Order, Consultation
 from .yookassa_service import create_payment
 from .send_msg_tg import send_msg_to_florist, send_msg_to_courier
-
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-
 
 def index(request):
     recommended = Bouquet.objects.all()[:3]
@@ -22,41 +20,66 @@ def index(request):
 def order(request):
     bouquets = Bouquet.objects.all()
     bouquet_id = request.session.get('selected_bouquet_id')
-
     delivery_times = [
         'Как можно скорее', 'с 10:00 до 12:00', 'с 12:00 до 14:00',
         'с 14:00 до 16:00', 'с 16:00 до 18:00', 'с 18:00 до 20:00'
     ]
+
     if request.method == 'POST':
         name = request.POST.get('name')
         phone_number = request.POST.get('phone_number')
         delivery_address = request.POST.get('delivery_address')
         delivery_time = request.POST.get('delivery_time')
 
-        customer, created = Customer.objects.get_or_create(
-            phone_number=phone_number,
-            defaults={'name': name}
-        )
+        if not all([name, phone_number, delivery_address, delivery_time]):
+            return render(request, 'order.html', {
+                'bouquets': bouquets,
+                'delivery_times': delivery_times,
+                'error': 'Пожалуйста, заполните все поля формы'
+            })
 
-        bouquet = Bouquet.objects.get(id=bouquet_id)
+        if not bouquet_id:
+            return render(request, 'order.html', {
+                'bouquets': bouquets,
+                'delivery_times': delivery_times,
+                'error': 'Букет не выбран. Пожалуйста, выберите букет.'
+            })
 
-        order = Order(
-            customer=customer,
-            bouquet_id=bouquet_id,
-            delivery_address=delivery_address,
-            delivery_time=delivery_time,
-            amount=bouquet.price
-        )
-        order.save()
+        try:
+            customer, created = Customer.objects.get_or_create(
+                phone_number=phone_number,
+                defaults={'name': name}
+            )
+            if not created and customer.name != name:
+                customer.name = name
+                customer.save()
 
-        return_url = request.build_absolute_uri(reverse('payment_success'))
-        payment = create_payment(order, return_url)
+            bouquet = get_object_or_404(Bouquet, id=bouquet_id)
 
-        order.yookassa_payment_id = payment.id
-        order.save()
+            order = Order(
+                customer=customer,
+                bouquet_id=bouquet_id,
+                delivery_address=delivery_address,
+                delivery_time=delivery_time,
+                amount=bouquet.price
+            )
+            order.save()
 
-        request.session['order_id'] = order.id
-        return redirect(payment.confirmation.confirmation_url)
+            return_url = f"{settings.NGROK_URL.rstrip('/')}{reverse('payment_success')}"
+            payment = create_payment(order, reverse('payment_success'))
+
+            order.yookassa_payment_id = payment.id
+            order.save()
+
+            request.session['order_id'] = order.id
+            return redirect(payment.confirmation.confirmation_url)
+
+        except Exception as e:
+            return render(request, 'order.html', {
+                'bouquets': bouquets,
+                'delivery_times': delivery_times,
+                'error': f'Произошла ошибка при создании заказа: {str(e)}'
+            })
 
     return render(request, 'order.html', {
         'bouquets': bouquets,
@@ -67,37 +90,56 @@ def order(request):
 def payment_success(request):
     order_id = request.session.get('order_id')
     if order_id:
-        order = get_object_or_404(Order, id=order_id)
-        payment = YooPayment.find_one(order.yookassa_payment_id)
+        try:
+            order = get_object_or_404(Order, id=order_id)
+            payment = YooPayment.find_one(order.yookassa_payment_id)
 
-        if payment.status == 'succeeded':
-            order.payment_status = 'paid'
-            order.save()
-
-            send_msg_to_courier(order)
-
-            if 'order_id' in request.session:
-                del request.session['order_id']
-
-            bouquets = Bouquet.objects.all().order_by('id')
-            paginator = Paginator(bouquets, 6)
-            page_number = request.GET.get('page', 1)
-            page_obj = paginator.get_page(page_number)
-            return render(request, 'catalog.html', {'page_obj': page_obj})
-
-        else:
+            if payment.status == 'succeeded':
+                if 'order_id' in request.session:
+                    del request.session['order_id']
+                bouquets = Bouquet.objects.all().order_by('id')
+                paginator = Paginator(bouquets, 6)
+                page_number = request.GET.get('page', 1)
+                page_obj = paginator.get_page(page_number)
+                return render(request, 'catalog.html', {'page_obj': page_obj})
+            else:
+                if 'order_id' in request.session:
+                    del request.session['order_id']
+                return redirect('payment_failed')
+        except Exception:
             if 'order_id' in request.session:
                 del request.session['order_id']
             return redirect('payment_failed')
+    else:
+        order_id_param = request.GET.get('orderId')
+        if order_id_param:
+            try:
+                order = get_object_or_404(Order, id=order_id_param)
+                payment = YooPayment.find_one(order.yookassa_payment_id)
+                if payment.status == 'succeeded':
+                    bouquets = Bouquet.objects.all().order_by('id')
+                    paginator = Paginator(bouquets, 6)
+                    page_number = request.GET.get('page', 1)
+                    page_obj = paginator.get_page(page_number)
+                    return render(request, 'catalog.html', {'page_obj': page_obj})
+                else:
+                    return redirect('payment_failed')
+            except Exception:
+                return redirect('payment_failed')
+        return redirect('payment_failed')
 
 
 def payment_failed(request):
     order_id = request.session.get('order_id')
     if order_id:
-        order = get_object_or_404(Order, id=order_id)
-        order.payment_status = 'failed'
-        order.save()
-
+        try:
+            order = get_object_or_404(Order, id=order_id)
+            order.payment_status = 'failed'
+            order.save()
+            if 'order_id' in request.session:
+                del request.session['order_id']
+        except Exception:
+            pass
     return render(request, 'payment_failed.html')
 
 
@@ -107,24 +149,26 @@ def yookassa_webhook(request):
         try:
             data = json.loads(request.body)
             payment_id = data['object']['id']
-
-            order = Order.objects.get(yookassa_payment_id=payment_id)
+            order = get_object_or_404(Order, yookassa_payment_id=payment_id)
             payment = YooPayment.find_one(payment_id)
 
-            if payment.status == 'succeeded':
+            if payment.status == 'succeeded' and order.payment_status != 'paid':
                 order.payment_status = 'paid'
+                order.save()
                 send_msg_to_courier(order)
+            elif payment.status in ['canceled', 'waiting_for_capture']:
+                order.payment_status = 'failed'
                 order.save()
 
-        except Exception as e:
-            print(f"Error processing webhook: {e}")
+        except Exception:
+            return HttpResponse(status=500)
 
     return HttpResponse(status=200)
 
 
 def catalog(request):
     bouquets = Bouquet.objects.all()
-    paginator = Paginator(bouquets, 6)  
+    paginator = Paginator(bouquets, 6)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
     return render(request, 'catalog.html', {'page_obj': page_obj})
@@ -133,7 +177,7 @@ def catalog(request):
 def load_more_bouquets(request):
     page = int(request.GET.get('page', 1))
     bouquets = Bouquet.objects.all()
-    paginator = Paginator(bouquets, 6)  
+    paginator = Paginator(bouquets, 6)
     if page <= paginator.num_pages:
         page_obj = paginator.page(page)
         html = render_to_string('bouquets_partial.html', {'page_obj': page_obj})
@@ -164,10 +208,17 @@ def consultation(request):
     name = request.POST.get('name')
     phone_number = request.POST.get('phone_number')
 
+    if not all([name, phone_number]):
+        return render(request, 'consultation.html', {'error': 'Заполните все поля'})
+
     customer, created = Customer.objects.get_or_create(
         phone_number=phone_number,
         defaults={'name': name}
     )
+    if not created and customer.name != name:
+        customer.name = name
+        customer.save()
+
     consultation = Consultation.objects.create(customer=customer)
 
     send_msg_to_florist(
@@ -175,7 +226,6 @@ def consultation(request):
         quiz_results=quiz_results
     )
     return redirect('index')
-
 
 
 def quiz(request):

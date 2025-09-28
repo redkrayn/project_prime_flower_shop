@@ -71,6 +71,8 @@ def send_msg_to_courier(order):
         f"📞 Телефон: {order.customer.phone_number}\n"
         f"📅 Дата оформления: {created_at_str}\n"
         f"💰 Сумма заказа: {order.amount}\n"
+        f"📍 Адрес доставки: {order.delivery_address}\n"
+        f"⏰ Время доставки: {order.delivery_time}\n"
     )
 
     courier = None
