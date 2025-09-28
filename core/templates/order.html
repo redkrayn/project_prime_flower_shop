@@ -35,7 +35,7 @@
                                  {% csrf_token %}
                                  <div class="order__form_block ficb">
                                      <input type="text" name="phone_number" class="order__form_input" placeholder="+7 (999) 000 00 00" value="{{ form_data.phone_number|default_if_none:'' }}" required>
-                                     <input type="text" name="first_name" class="order__form_input" placeholder="Введите Имя" value="{{ form_data.first_name|default_if_none:'' }}" required>
+                                     <input type="text" name="name" class="order__form_input" placeholder="Введите Имя" value="{{ form_data.first_name|default_if_none:'' }}" required>
                                      <input type="text" name="delivery_address" class="order__form_input" placeholder="Введите адрес доставки" value="{{ form_data.delivery_address|default_if_none:'' }}" required>
                                  </div>
                                  <div class="order__form_btns fic">

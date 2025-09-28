@@ -92,7 +92,7 @@
                 <div class="title consultation__title">Оставьте заявку на консультацию</div>
                 <form action="{% url 'consultation' %}" method="post" class="consultation__form">
                     {% csrf_token %}
-                    <input type="text" name="first_name" class="consultation__form_input" placeholder="Введите Имя" required>
+                    <input type="text" name="name" class="consultation__form_input" placeholder="Введите Имя" required>
                     <input type="text" name="phone_number" class="consultation__form_input" placeholder="+7 (999) 000 00 00" required>
                     <button type="submit" class="btn consultation__form_btn">Отправить</button>
                 </form>

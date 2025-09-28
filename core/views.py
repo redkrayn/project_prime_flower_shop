@@ -28,13 +28,13 @@ def order(request):
         'с 14:00 до 16:00', 'с 16:00 до 18:00', 'с 18:00 до 20:00'
     ]
     if request.method == 'POST':
-        first_name = request.POST.get('first_name')
+        name = request.POST.get('name')
         phone_number = request.POST.get('phone_number')
         delivery_address = request.POST.get('delivery_address')
         delivery_time = request.POST.get('delivery_time')
         
         customer, created = Customer.objects.get_or_create(
-            first_name=first_name,
+            name=name,
             phone_number=phone_number,
             defaults={'last_name': ''}
         )
@@ -88,7 +88,7 @@ def payment_success(request):
 
             send_msg_to_courier(
                 order.courier.name if order.courier else 'Курьер',
-                order.customer.first_name,
+                order.customer.name,
                 order_id,
                 order.customer.phone_number,
                 order.delivery_time,
@@ -141,7 +141,7 @@ def yookassa_webhook(request):
 
                 send_msg_to_courier(
                     order.courier.name if order.courier else 'Курьер',
-                    order.customer.first_name,
+                    order.customer.name,
                     order.customer.phone_number,
                     order.delivery_time
                 )
@@ -194,18 +194,18 @@ def consultation(request):
             'consultation.html'
         )
 
-    first_name = request.POST.get('first_name')
+    name = request.POST.get('name')
     phone_number = request.POST.get('phone_number')
 
     customer, created = Customer.objects.get_or_create(
-        first_name=first_name,
+        name=name,
         phone_number=phone_number,
         defaults={'last_name': ''}
     )
     consultation = Consultation.objects.create(customer=customer)
 
     send_msg_to_florist(
-        customer.first_name,
+        customer.name,
         customer.phone_number,
         consultation.created_at,
         quiz_results
