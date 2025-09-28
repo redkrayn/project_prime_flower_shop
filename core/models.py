@@ -162,6 +162,13 @@ class Order(models.Model):
         default=0
     )
 
+    def __str__(self):
+        return f'Заказ от {self.customer or "Неизвестно"}'
+
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'
+
 
 class Consultation(models.Model):
     customer = models.ForeignKey(
