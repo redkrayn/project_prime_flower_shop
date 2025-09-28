@@ -1,7 +1,14 @@
 import requests
 from django.conf import settings
 
-from core.models import Bouquet
+from core.models import Bouquet, Courier, Florist
+
+
+def get_employee_chat_id(role):
+    if role == 'courier':
+        employee = Courier.objects.filter(is_active)
+    else:
+        pass
 
 
 def send_msg_to_florist(first_name, phone_number, consultation, quiz_results=None):
