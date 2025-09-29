@@ -183,7 +183,36 @@ class OrderAdmin(admin.ModelAdmin, ExportCsvMixin):
         return top_bouquets
 
 
-admin.site.register(Customer)
-admin.site.register(Courier)
-admin.site.register(Florist)
-admin.site.register(Consultation)
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'phone_number')
+    search_fields = ('name', 'phone_number')
+    list_per_page = 20
+
+
+@admin.register(Courier)
+class CourierAdmin(admin.ModelAdmin):
+    list_display = ('name', 'phone_number', 'tg_chat_id', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('name', 'phone_number')
+    list_editable = ('is_active',)
+    list_per_page = 20
+
+
+@admin.register(Florist)
+class FloristAdmin(admin.ModelAdmin):
+    list_display = ('name', 'phone_number', 'tg_chat_id', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('name', 'phone_number')
+    list_editable = ('is_active',)
+    list_per_page = 20
+
+    
+@admin.register(Consultation)
+class ConsultationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'customer', 'florist', 'status', 'created_at')
+    list_filter = ('status', 'created_at')
+    search_fields = ('customer__name', 'florist__name')
+    list_editable = ('status', 'florist')
+    list_per_page = 20
+    date_hierarchy = 'created_at'
