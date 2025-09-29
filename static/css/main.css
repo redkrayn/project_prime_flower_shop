@@ -157,12 +157,39 @@ input::placeholder {
     width: 398px;
     height: 400px;
     margin-right: 9px;
-    color: #000;
     text-decoration: none;
     background-size: cover;
+    position: relative; /* Для наложения слоя */
 }
 .recommended__block:last-child {
     margin-right: 0;
+}
+.recommended__block_elems {
+    width: 100%;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.7); /* Полупрозрачный темный слой */
+    position: absolute; /* Наложение на изображение */
+    bottom: 0; /* Выравнивание по нижнему краю */
+    color: #FFFFFF; /* Белый текст по умолчанию */
+}
+.recommended__block_intro {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 103.52%;
+    color: #FFFFFF;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9); /* Обводка для контраста */
+}
+.recommended__block_price {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 103.52%;
+    color: #FFFFFF;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9); /* Обводка для контраста */
+}
+.recommended__block:hover .recommended__block_elems {
+    background: rgba(0, 0, 0, 0.4); /* Светлее при наведении */
 }
 .recommended__block_first {
     background: url('../img/recommendedBg1.jpg') no-repeat center bottom / cover;
@@ -172,10 +199,6 @@ input::placeholder {
 }
 .recommended__block_thr {
     background: url('../img/recommendedBg3.jpg') no-repeat center bottom / cover;
-}
-.recommended__block_elems {
-    width: 100%;
-    padding: 15px;
 }
 .recommended__btn {
     width: 100%;

@@ -1,8 +1,8 @@
 from django.urls import path
 from .views import (
     index, quiz, quiz_step, result, catalog, consultation,
-    order, bouquet_detail, yookassa_webhook, payment_failed,
-    payment_success, load_more_bouquets, privacy_policy
+    order, bouquet_detail, yookassa_webhook, payment_result,
+    load_more_bouquets, privacy_policy
 )
 
 
@@ -15,8 +15,7 @@ urlpatterns = [
     path('bouquet/<int:bouquet_id>/', bouquet_detail, name='bouquet_detail'),
     path('consultation/', consultation, name='consultation'),
     path('order/', order, name='order'),
-    path('payment/success/', payment_success, name='payment_success'),
-    path('payment/failed/', payment_failed, name='payment_failed'),
+    path('payment/result/', payment_result, name='payment_result'),
     path('yookassa-webhook/', yookassa_webhook, name='yookassa_webhook'),
     path('load-more-bouquets/', load_more_bouquets, name='load_more_bouquets'),
     path('privacy-policy/', privacy_policy, name='privacy_policy'),

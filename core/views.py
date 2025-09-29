@@ -1,16 +1,18 @@
+import json
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
-import json
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 from yookassa import Payment as YooPayment
-from django.conf import settings
+
 from .models import Bouquet, Customer, Order, Consultation
 from .yookassa_service import create_payment
 from .send_msg_tg import send_msg_to_florist, send_msg_to_courier
-from django.http import JsonResponse
-from django.template.loader import render_to_string
+
 
 def index(request):
     recommended = Bouquet.objects.all()[:3]
@@ -46,6 +48,7 @@ def order(request):
             })
 
         try:
+            # Создаем или получаем клиента
             customer, created = Customer.objects.get_or_create(
                 phone_number=phone_number,
                 defaults={'name': name}
@@ -56,22 +59,25 @@ def order(request):
 
             bouquet = get_object_or_404(Bouquet, id=bouquet_id)
 
-            order = Order(
+            # Создаем заказ
+            order = Order.objects.create(
                 customer=customer,
-                bouquet_id=bouquet_id,
+                bouquet=bouquet,
                 delivery_address=delivery_address,
                 delivery_time=delivery_time,
                 amount=bouquet.price
             )
-            order.save()
 
-            return_url = f"{settings.NGROK_URL.rstrip('/')}{reverse('payment_success')}"
-            payment = create_payment(order, reverse('payment_success'))
-
+            # Создаем платеж
+            payment = create_payment(order, reverse('payment_result'))
+            # Сохраняем id платежа
             order.yookassa_payment_id = payment.id
             order.save()
 
+            # Сохраняем в сессии для последующей проверки
             request.session['order_id'] = order.id
+
+            # Редирект на страницу подтверждения YooKassa
             return redirect(payment.confirmation.confirmation_url)
 
         except Exception as e:
@@ -81,66 +87,37 @@ def order(request):
                 'error': f'Произошла ошибка при создании заказа: {str(e)}'
             })
 
+    # GET-запрос — просто рендер формы
     return render(request, 'order.html', {
         'bouquets': bouquets,
         'delivery_times': delivery_times
     })
 
 
-def payment_success(request):
-    order_id = request.session.get('order_id')
-    if order_id:
-        try:
-            order = get_object_or_404(Order, id=order_id)
-            payment = YooPayment.find_one(order.yookassa_payment_id)
+def payment_result(request):
+    order_id = request.session.pop('order_id', None)
 
-            if payment.status == 'succeeded':
-                if 'order_id' in request.session:
-                    del request.session['order_id']
-                bouquets = Bouquet.objects.all().order_by('id')
-                paginator = Paginator(bouquets, 6)
-                page_number = request.GET.get('page', 1)
-                page_obj = paginator.get_page(page_number)
-                return render(request, 'catalog.html', {'page_obj': page_obj})
-            else:
-                if 'order_id' in request.session:
-                    del request.session['order_id']
-                return redirect('payment_failed')
-        except Exception:
-            if 'order_id' in request.session:
-                del request.session['order_id']
-            return redirect('payment_failed')
-    else:
-        order_id_param = request.GET.get('orderId')
-        if order_id_param:
-            try:
-                order = get_object_or_404(Order, id=order_id_param)
-                payment = YooPayment.find_one(order.yookassa_payment_id)
-                if payment.status == 'succeeded':
-                    bouquets = Bouquet.objects.all().order_by('id')
-                    paginator = Paginator(bouquets, 6)
-                    page_number = request.GET.get('page', 1)
-                    page_obj = paginator.get_page(page_number)
-                    return render(request, 'catalog.html', {'page_obj': page_obj})
-                else:
-                    return redirect('payment_failed')
-            except Exception:
-                return redirect('payment_failed')
-        return redirect('payment_failed')
+    if not order_id:
+        return redirect('catalog')
 
+    try:
+        order = get_object_or_404(Order, id=order_id)
+        payment = YooPayment.find_one(order.yookassa_payment_id)
 
-def payment_failed(request):
-    order_id = request.session.get('order_id')
-    if order_id:
-        try:
-            order = get_object_or_404(Order, id=order_id)
+        if payment.status == 'succeeded':
+            order.payment_status = 'paid'
+            order.save()
+            request.session['payment_message'] = 'Заказ успешно оплачен!'
+            return redirect('catalog')
+        else:
             order.payment_status = 'failed'
             order.save()
-            if 'order_id' in request.session:
-                del request.session['order_id']
-        except Exception:
-            pass
-    return render(request, 'payment_failed.html')
+            request.session['payment_message'] = 'Оплата отклонена, повторите попытку позднее...'
+            return redirect('catalog')
+
+    except Exception:
+        request.session['payment_message'] = 'Неизвестная ошибка при оплате.'
+        return redirect('catalog')
 
 
 @csrf_exempt
@@ -171,6 +148,16 @@ def catalog(request):
     paginator = Paginator(bouquets, 6)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
+    if request.session.get('payment_message'):
+        message = request.session.pop('payment_message', None)
+        return render(
+            request,
+            'catalog.html',
+            {
+                'page_obj': page_obj,
+                'message': message
+            }
+        )
     return render(request, 'catalog.html', {'page_obj': page_obj})
 
 

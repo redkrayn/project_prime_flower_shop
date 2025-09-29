@@ -21,11 +21,13 @@ git clone https://github.com/redkrayn/project_prime_flower_shop.git
 python -m venv .venv
 pip install -r requirements.txt
 ```
-Создайте в корне проекта файл `.env` и добавьте в него переменные окружения:
+Создайте в корне проекта файл `.env` и добавьте в него переменные окружения (можно скопировать из `.env.exaple`):
 
 - `DEBUG` - дебаг-режим (`True` / `False`); 
 - `SECRET_KEY` - секретный ключ Django, должен быть длинным и уникальным;
 - `ALLOWED_HOSTS` - список разрешенных хостов; для локального запуска достаточно указать `127.0.0.1`
+- `CSRF_TRUSTED_ORIGINS` — список доверенных источников для CSRF (например, https://example.com);
+- `WEBHOOK_URL` — базовый URL для формирования return_url в YooKassa и других вебхуков;
 - `DB_NAME` - название базы данных SQLite;
 - `TELEGRAM_BOT_TOKEN` - токен бота в Telegram, можно получить у [BotFather](https://telegram.me/BotFather);
 - `TELEGRAM_DEFAULT_CHAT_ID` - Chat ID пользователя, который будет получать сообщения, если их не удалось отправить курьеру / флористу;

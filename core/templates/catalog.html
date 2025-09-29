@@ -26,6 +26,11 @@
     <section id="catalog">
         <div class="container p100">
             <div class="catalog">
+                {% if message %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+                {% endif %}
                 <div class="title">Все букеты</div>
                 <div class="catalog__block">
                     <div class="bouquets-container">
