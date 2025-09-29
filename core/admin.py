@@ -111,9 +111,18 @@ class ExportCsvMixin:
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin, ExportCsvMixin):
     change_list_template = "change_list.html"
-    actions = ["export_as_csv"]
-    list_display = ['customer', 'bouquet', 'amount', 'payment_status', 'created_at']
-    list_filter = ['payment_status', 'created_at']
+    list_display = ('id', 'customer', 'bouquet', 'courier', 'status', 'payment_status', 'amount', 'created_at', 'delivery_time')
+    list_filter = ('status', 'payment_status', 'courier', 'created_at')
+    search_fields = ('customer__name', 'bouquet__name', 'delivery_address')
+    list_editable = ('courier', 'status', 'payment_status')
+    list_per_page = 25
+    date_hierarchy = 'created_at'
+    actions = ['export_as_csv', 'mark_as_delivered', 'mark_as_paid', 'assign_courier']
+    fieldsets = (
+        (None, {'fields': ('customer', 'bouquet', 'courier')}),
+        ('Детали доставки', {'fields': ('delivery_address', 'delivery_time')}),
+        ('Статус', {'fields': ('status', 'payment_status', 'amount', 'yookassa_payment_id')}),
+    )
 
     def changelist_view(self, request, extra_context=None):
         queryset = self.get_queryset(request)
@@ -182,6 +191,23 @@ class OrderAdmin(admin.ModelAdmin, ExportCsvMixin):
             })
         return top_bouquets
 
+    def mark_as_delivered(self, request, queryset):
+        queryset.update(status='delivered')
+    mark_as_delivered.short_description = 'Отметить как доставлено'
+
+    def mark_as_paid(self, request, queryset):
+        queryset.update(payment_status='paid')
+    mark_as_paid.short_description = 'Отметить как оплачено'
+
+    def assign_courier(self, request, queryset):
+        active_courier = Courier.objects.filter(is_active=True).first()
+        if active_courier:
+            queryset.update(courier=active_courier)
+            self.message_user(request, f"Назначен курьер: {active_courier.name}")
+        else:
+            self.message_user(request, "Нет активных курьеров", level='error')
+    assign_courier.short_description = 'Назначить активного курьера'
+
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
@@ -207,7 +233,7 @@ class FloristAdmin(admin.ModelAdmin):
     list_editable = ('is_active',)
     list_per_page = 20
 
-    
+
 @admin.register(Consultation)
 class ConsultationAdmin(admin.ModelAdmin):
     list_display = ('id', 'customer', 'florist', 'status', 'created_at')
